@@ -62,6 +62,8 @@
 - `Local History` Можете посмотреть историю изменения файла
 - `Mark Directory as` Установить папку как `Sources Root` или `Tamplate`
 
+---
+
 Использование `Sources Root`
 
 ![](_attachments/1ac99ffe207f6e67bf458bcece52433b.png)
@@ -72,11 +74,7 @@
 
 ![До](_attachments/381dc8b367c644bfdb450d61488d3abc.png)
 
----
-
 ![В процессе](_attachments/8e81d025feff7b59d517b78276cd8d08.png)
-
----
 
 ![После](_attachments/3149296ef473da6b29e830213ef68291.png)
 
@@ -524,7 +522,9 @@ if __name__ == '__main__':
 ## Примеры расположения тестов
 
 Пример правильной компоновки тестов
+
 ![](_attachments/b1c4b90dd11f3dafab2e14704105456c.png)
 
 Не правильный пример, но так тоже будет работать
+
 ![](_attachments/cc31508de044ab547e5a0429a20806d9.png)
