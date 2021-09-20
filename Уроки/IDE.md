@@ -4,6 +4,7 @@
 
 - `PyCharm`
 - `VS Code`
+
     ![Статистика пользователй IDE](_attachments/b12d3db878b0da11c60058b334a11c7c.png)
 
 В данном уроке мы рассмотрим профессиональную интегрированною среду разработки `PyCharm`.
@@ -62,6 +63,7 @@
 - `Mark Directory as` Установить папку как `Sources Root` или `Tamplate`
 
 Использование `Sources Root`
+
 ![](_attachments/1ac99ffe207f6e67bf458bcece52433b.png)
 
 ---
@@ -296,11 +298,15 @@ Ctrl+O
 ```
 
 ![Прсотой варинт](_attachments/1c06ffd329a97cffaa1ebf09121ec79d.png)
+
 ![Переопределение методов](_attachments/9cfe5887b5d92cecb54e6b669c43f068.png)
+
 ![Результат переопределения](_attachments/9b58aefff11ae73c063d3b8d3c98ea43.png)
 
 Также можно переопределять другие методы класса
+
 ![Переопределение](_attachments/038448e5ab1c993bfa065b1036e1662e.png)
+
 ![Результат](_attachments/3ce0244a37da2679f4ea86d07825ce68.png)
 
 - Создать временный файл
@@ -339,9 +345,13 @@ Ctrl + F8
 
 # Использование Живых шаблонов `Live Templatse`
 
-Пример использования `Live Templatse`
+## Пример использования `Live Templatse`
+
 ![Подсказка](_attachments/b540fea1fead47a1a8a2c50d6fee953b.png)
+
 ![Результат](_attachments/a5ee534644b01f0521364123cb0813b4.png)
+
+---
 
 ![](_attachments/1c88a12d3bf841be8e9e04fec4c4f2b6.png)
 
@@ -349,37 +359,51 @@ Ctrl + F8
 2. Добавить группу
 3. Горячая клавиша создания шаблона
 
-Пример создания шаблона
+---
+
+## Пример создания шаблона
+
 ![](_attachments/957b5de4ae32ef01448881fab169548d.png)
 
 1.  Шаблонное слово
 2.  Описание шаблонного слова
 3.  Где будет действовать шаблон
-    ![](_attachments/da93a86f2efe087d55fc15a5ecd7dcab.png)
-4.  Указать значения по умолчанию, и шаблонные функции
-    ![](_attachments/8217419a5202f938633f95046481d3d5.png)
 
+    > ![](_attachments/da93a86f2efe087d55fc15a5ecd7dcab.png)
+
+4.  Указать значения по умолчанию, и шаблонные функции
     1.  Переопределенные функции [Документация](https://www.jetbrains.com/help/idea/template-variables.html#predefined_functions).
     2.  Значение по умолчанию должно быть обязательно в двойных ковычках `" "`.
     3.  Вставить значение по умолчанию.
 
+> ![](_attachments/8217419a5202f938633f95046481d3d5.png)
+
 # Использование постфиксов `Postfix` и плагины `Custom Postfix Templates`
 
-Пример постфикса
+## Пример постфикса
 
 ![Пример постфикса1](_attachments/392bd065f19011c4e4c78531e532dfd8.png)
+
 ![Результат постфикса1](_attachments/bf65dd1a99bfd565695ed5495230571b.png)
 
 ---
 
 ![Пример постфикса2](_attachments/d79c4489ee0b045933ff1383af23f754.png)
+
 ![Выбрать варинт постфикса2](_attachments/327635fff672171c30382434f94976e1.png)
+
 ![Результат постфикса2](_attachments/c9e5fcc564c163ac003e947963f48ff1.png)
 
-Стандартные постфиксы
+---
+
+## Стандартные постфиксы
+
 ![Стандартные постфиксы](_attachments/fe506874d11d07af3accc47b84e4554e.png)
 
-Плагин `Custom Postfix Templates`
+---
+
+## Плагин `Custom Postfix Templates`
+
 [Ссылка на плагин](https://plugins.jetbrains.com/plugin/9862-custom-postfix-templates)
 
 После установки плагины нажмите чтобы быстро открыть меню плагина
@@ -432,6 +456,7 @@ Alt + Shift + P
 ## Включить контроль версий
 
 `VCS -> Enable Version Control Integration`
+
 ![Выбираем вид VCS](_attachments/b89110adf7c7ec1f74fd0e1482765844.png)
 
 ## Создать `.gitignore`
@@ -461,7 +486,7 @@ Alt + Shift + P
 
 # Тестирование кода
 
-Создаем файл с тестами
+## Создаем файл с тестами
 
 ```python
 import unittest
@@ -477,16 +502,26 @@ if __name__ == '__main__':
 
 ```
 
+---
+
+## Создать конфигурациию запуска текстов
+
 ![](_attachments/609e8754f9bd0bb1afc9a1eccefc65e6.png)
 
 1. `Eddit Configuration`
 2. Выбираем библиотеку для тестирования
+
+---
 
 ![](_attachments/e495e4a27d027a2f8acb3314685b5b5a.png)
 
 1. Указываем путь к папке с тестами, или указываем путь на весь проект
 2. Если указать весь проект, то `PyCharm` по умолчанию будет искать и запускать
    файлы начинающиеся с именем `test`
+
+---
+
+## Примеры расположения тестов
 
 Пример правильной компоновки тестов
 ![](_attachments/b1c4b90dd11f3dafab2e14704105456c.png)
