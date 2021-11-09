@@ -265,13 +265,7 @@ class $NameModel$Form(forms.ModelForm):
 
 # Настройка шаблона приложения
 
-Рекомендую сделать следующую структуру шаблона приложения
-
----
-
-Приложение
-
-`/venv/lib/python3.9/site-packages/django/conf/app_template`
+Шаблон приложения расположен по пути `/venv/lib/python3.9/site-packages/django/conf/app_template`
 
 - `app_template`
 
@@ -281,28 +275,13 @@ class $NameModel$Form(forms.ModelForm):
 
         - `app_name` (+)
 
-            - `index_main.html`(+)
-
-                ```html
-                <!DOCTYPE html>
-                <html lang="ru">
-                <head>
-                	<meta charset="UTF-8">
-                	<title>Title</title>
-                </head>
-                <body>
-
-                </body>
-                </html>
-                ```
-
-    - `static` (+)
+    - `static` (+) Для статических файлов
         - `app_name` (+)
             - `css` (+)
             - `js` (+)
             - `img` (+)
-            - `fonts` (+)
-    - `templatetags` (+)
+            - `fonts` (+) Для шрифтов
+    - `templatetags` (+) Для своих тегов
 
         - `__init__.py` (+)
 
@@ -312,8 +291,9 @@ class $NameModel$Form(forms.ModelForm):
     - `models.py-tpl`
     - `tests.py-tpl`
     - `views.py-tpl`
-    - `urls.py-tpl` (+)
-    - `forms.py` (+)
+    - `README.md` (+) Описание приложения, инструкция по добовлению его в проект
+    - `urls.py-tpl` (+) Url маршрутизация
+    - `forms.py` (+) Формы
 
         ```python
         from django.urls import path
@@ -329,9 +309,11 @@ class $NameModel$Form(forms.ModelForm):
 
 # Настройке проекта
 
+Шаблон проекта расположен по пути `/venv/lib/python3.9/site-packages/django/conf/project_template`
+
 - `project_template`
 
-    - `media` (+)
+    - `media` (+) Хрянтся меда файлы
 
     - `project_name`
 
@@ -349,7 +331,7 @@ class $NameModel$Form(forms.ModelForm):
         # Локализацтя ##############################################################################################
         LANGUAGE_CODE = 'ru' # Язык сервера
         USE_I18N = True # Логическое значение, указывающее, должна ли быть включена система перевода Django.
-        TIME_ZONE = 'UTC' #  Часовой пояс
+        TIME_ZONE = 'Europe/Moscow' #  Часовой пояс
         USE_L10N = True # Логическое значение, указывающее, будет ли включено локализованное форматирование данны
         USE_TZ = True # Логическое значение, указывающее, будут ли даты по умолчанию учитывать часовой пояс
         ############################################################################################################
@@ -374,7 +356,7 @@ class $NameModel$Form(forms.ModelForm):
         - `urls.py-tpl`
         - `wsgi.py-tpl`
 
-    - `__dont_publish.py-tpl` (+)
+    - `__dont_publish.py-tpl` (+) Скрипт который устанавлевает в переменные окружения все секретные данные, его мы добовляем в `.gitignore` и держим его в тайне.
 
         ```python
         """
@@ -399,4 +381,14 @@ class $NameModel$Form(forms.ModelForm):
         	os.environ["DJANGO_SECRET_KEY"] = '{{ secret_key }}'
         ```
 
-                - `manage.py-tpl`
+    - `manage.py-tpl`
+    - `README.md` (+) Описание проекта
+    - `requirements.txt` (+) Хранить зависемости
+    - `dump.json` (+) Хранить сохранения БД
+    - `gunicorn.conf.py` (+) Настройки для `gunicorn`
+    - `.gitignore`
+        ```bush
+        /.idea
+        /venv
+        __dont_publish.py
+        ```

@@ -302,6 +302,20 @@ class TTT:
 if __name__ == '__main__':
     TTT()
 ```
+
+</details>
+
+<details><summary>Свернутый текст</summary>
+<pre>
+```bush
+If you come from bash you might have to change your $PATH.
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+#
+Example aliases
+alias zshconfig="mate ~/.zshrc"
+alias ohmyzsh="mate ~/.oh-my-zsh"
+```
+</pre>
 </details>
 
 ## Изображени
