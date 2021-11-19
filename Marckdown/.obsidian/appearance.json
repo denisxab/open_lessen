@@ -1,0 +1,10 @@
+{
+  "baseFontSize": 13,
+  "translucency": false,
+  "cssTheme": "Atom",
+  "enabledCssSnippets": [
+    "test",
+    "bright headlines"
+  ],
+  "theme": "obsidian"
+}

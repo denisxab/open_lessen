@@ -1,0 +1,163 @@
+
+/*Preview*/
+/*Заголовки*/
+.markdown-preview-view h1 {
+    background: #4472c4;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 3px 0 3px 10px;
+    font-size: 26px;
+    border-radius: 4px 4px 0 0;
+}
+.markdown-preview-view h2 {
+    background: #D9E2F3;
+    color: #000000;
+    margin: 0;
+    padding: 3px 0 3px 10px;
+    font-size: 20px;
+    border-radius: 4px 4px 0 0;
+}
+.markdown-preview-view h3 {
+    background: #E8A202;
+    color: #000000;
+    margin: 0;
+    padding: 3px 0 3px 10px;
+    font-size: 20px;
+
+}
+
+/*!*Цитаты*!*/
+/*.markdown-preview-view blockquote{*/
+/*    !*margin: 0 10px 0 25px;*!*/
+/*    !*padding: 3px 0 3px 10px;*!*/
+/*}*/
+/*.markdown-preview-view blockquote ul p{*/
+/*    margin: 5px ;*/
+/*}*/
+
+
+/*Код*/
+    /*Python code block*/
+    .markdown-preview-view div pre.language-python{
+            background: #161b22;
+            border-radius: 10px;
+    }
+    /*Cmd code block*/
+    .markdown-preview-view  div pre.language-cmd{
+            background: #161b22;
+            border-radius: 10px;
+    }
+
+    /*Code string*/
+    .markdown-preview-view div code{
+        color: #E7E6E6;
+        background: #2f333a;
+    }
+
+/*Текст*/
+.markdown-preview-view div > p{
+        margin: 10px 0 10px 0;
+        padding: 3px 3px 3px 10px;
+        border: 2px solid #a69481;
+        border-radius: 4px;
+}
+
+/*Изображения*/
+.markdown-preview-view img{
+    border: 1px solid #161b22;
+    border-radius: 5px;
+}
+
+
+
+/*Редактор*/
+
+
+/*Меню*/
+div .outline > .tree-item {
+    border: 1px solid #2f333a;
+}
+div .outline .tree-item .tree-item-children {
+    background: #2f333a;
+    border: 1px solid #2f333a;
+    border-radius: 10px 0 0 0;
+
+}
+div .outline .tree-item .tree-item-self.is-clickable .tree-item-inner{
+    color: #a4a4a4;
+    font-family: Times;
+    margin: 2px;
+
+}
+
+div .outline .tree-item .tree-item-children .tree-item-inner{
+    color: #a4a4a4;
+    font-family: Times;
+    margin: 1px;
+}
+
+/*.tree-item-children > .tree-item{*/
+/*    border: 1px solid #4472c4;*/
+/*    border-radius: 5px;*/
+/* !*padding-top: 70px;*!*/
+/* !*padding-bottom: 5px;*!*/
+/*}*/
+/*div .outline .tree-item > .tree-item-self.is-clickable .tree-item-inner{*/
+/*    background: #4472c4;*/
+/*}*/
+/*.tree-item-children > .tree-item{*/
+/*            background: #E7E6E6;*/
+/*}*/
+/*.tree-item > .tree-item-self.is-clickable{*/
+/*    !*background: #161b22;*!*/
+/* !*padding-top: 70px;*!*/
+/* !*padding-bottom: 5px;*!*/
+/*}*/
+/*.cm-s-obsidian .HyperMD-header-2 {*/
+/* padding-top: 10px;*/
+/* padding-bottom: 5px;*/
+/*}*/
+/*.markdown-source-view{*/
+/*         margin: 0 300px 0 0;*/
+/*    !*width: 100%;*!*/
+/*        !*padding: 3px 0 3px 10px;*!*/
+/*        !*background: #E8A202;*!*/
+/*}*/
+/*.CodeMirror-scroll{*/
+/*        width: 100%;*/
+/*}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
