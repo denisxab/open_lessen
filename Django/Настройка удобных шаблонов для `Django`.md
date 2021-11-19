@@ -2,7 +2,7 @@
 
 ## Настройка шаблонов Html
 
-![Настройка шаблонов Html](../_attachments/16cf18964cd9150fc6bd8d26e05ea41d.png)
+![Настройка шаблонов Html](_attachments/16cf18964cd9150fc6bd8d26e05ea41d.png)
 
 ---
 

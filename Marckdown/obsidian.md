@@ -245,6 +245,7 @@ Consistent attachments and links: Check vault consistent
 | `Consistent attachments and links: Convert all embed paths to relative`       | Изменить пути на относительные         |
 | `Consistent attachments and links: Convert all link paths to relative`        | Изменить ссылки на относительные       |
 | `Consistent attachments and links: Delete empty folders`                      | Удалить пустые папки                   |
+| `Consistent attachments and links: Reorganize vault`                          | Настройка путей                        | 
 
 [Документация Consistent attachments and links ](https://github.com/derwish-pro/obsidian-consistent-attachments-and-links)
 
