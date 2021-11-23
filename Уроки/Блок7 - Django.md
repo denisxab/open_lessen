@@ -149,6 +149,15 @@ DATABASES = {
     }
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Автоматически добавлять поле primary_key к БД
+
+
+# Кеширование данных в файловой системе
+CACHES = {
+      'default': {
+            'BACKEND' : 'django.core.cache.backends.filebased.FileBasedCache',
+ 'LOCATION': os.path.join(BASE_DIR, 'mai_cache')
+      }
+}
 ############################################################################################################
 
 
@@ -206,14 +215,32 @@ MEDIA_URL = '/media/' # Добавляет к файлам префикс
 ############################################################################################################
 
 
-# Для debug_toolbar
+# Для отладки
 if DEBUG:
+	# pip install django-debug-toolbar  django-livereload-server
+	INSTALLED_APPS.append('livereload')
 	INSTALLED_APPS.append('debug_toolbar')
 	INTERNAL_IPS = [
 			'127.0.0.1',
 	]
 	MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+	MIDDLEWARE.append('livereload.middleware.LiveReloadScript')
 
+	# Отключить кеширование при отладке
+	CACHES = {
+
+			'default': {
+					'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+			}
+	}
+
+	# Info = Debugger(**dINFO)
+	# Debug = Debugger(**dDEBUG)
+	# Warning = Debugger(**dWARNING)
+	# if not os.environ.get('console_debugger', False):  # Для защиты от двойного запуска Django
+	#  os.environ['console_debugger'] = "True"
+	# else:
+	#  Debugger.GlobalManager(typePrint="socket"
 ```
 
 # `urls.py` = Маршрутизация по сайту
@@ -738,7 +765,9 @@ class $NameView$(View):
 	context_object_name = "$NameClass$" # Для результата класса, Даем понятное имя переменой в шаблон.
 
 	paginate_by = 3  # Сколько объектов должно быть на одной странице
-	paginator = page_obj_cast  # Какой плагиатор использовать (Кастомный)
+	paginator = page_obj_cast  # Какой плагиатор использовать (Это Кастомный)
+
+	max_offer_page = 2 # Сколько цифр страниц показывать для переключения
 
 	"""
 	Основные действия в  _ListView
@@ -748,19 +777,26 @@ class $NameView$(View):
 	4. Отдать результат
 	"""
 
+
 	def get(self, request: WSGIRequest, **kwargs):
 		"""
 		В методе обрабатывается GET запрос
+		request.method == "GET"
 
 		- http://<>/?page=1
 		"""
+		# Проверить корректность запроса `GET` запроса, и получить из него номер страницы.
+		# Если некорректный запрос, то вернут 404
+		# tuple[bool, Union[НомерСтраницы:int, HttpResponse]]
+		page = self.paginator.valid_page(request.GET.get("page"))
+		if page[0]:
+			return render(request,
+			              template_name=self.template_name,
+			              context=self.get_context_data(page[1]), )
+		else:
+			return page[1]
 
-		# Проверить корректность запроса `GET` запроса, и получить из него номер страницы
-		page = page_obj_cast.valid_page(request.GET.get("page"))
 
-		return render(request,
-		              template_name=self.template_name,
-		              context=self.get_context_data(page), )
 
 	def get_count(self) -> int:
 		"""
@@ -801,7 +837,7 @@ class $NameView$(View):
 				# Запрос из БД
 				self.context_object_name: self.get_queryset(page),
 				# Данные для пагинации
-				"page_obj"              : self.paginator(self.paginate_by, page, count),
+				"page_obj": self.paginator(self.paginate_by, page, count, self.max_offer_page),
 		}
 		return context
 ```
@@ -1013,8 +1049,15 @@ class MainProductRibbon(ListView):
 Собственный пагинатор
 
 ```python
+from typing import Any
+
+
 class page_obj_cast:
-	def __init__(self, paginate_by, is_page, count, ):
+	"""
+	Плагиатор страниц
+	"""
+
+	def __init__(self, paginate_by: int, is_page: int, count: int, max_offer_page: int = 2):
 		"""
 		:param paginate_by: Колличество элементов на странице
 		:param is_page: Текущая страница
@@ -1031,31 +1074,103 @@ class page_obj_cast:
 		| `page`.count                  | Общее количество всех элементов на всех страницах              |
 		| `page`.num_pages              | Общее количество страниц.                                      |
 		| `page`.page_range             | Итератор для страниц                                           |
-
+		| `page`.max_offer_page         | Сколько страниц предлагать в баре для переключения             |
+		| `page`.count                  | Общее количество                                               |
 		"""
 		self.number = is_page + 1
 		self.num_pages = count // paginate_by + (1 if count % paginate_by != 0 else 0)
-		self.page_range = range(self.num_pages)
+		self.page_range = range(1, self.num_pages + 1)
 		self.has_next = True if self.number * paginate_by < count else False
 		self.next_page_number = self.number + 1 if self.number * paginate_by < count else self.number
 		self.has_previous = True if self.number > 1 else False
 		self.previous_page_number = self.number - 1 if self.number > 1 else self.number
 		self.has_other_pages = True if self.has_next or self.has_previous else False
+		self.max_offer_page = (max_offer_page * -1, max_offer_page)
+		self.count = count
 
 	@staticmethod
-	def valid_page(page):
+	def valid_page(page) -> int:
 		"""
 		Отсчет начинается с 0
 		:param page: page_obj_cast.valid_page(request.GET.get("page"))
 		"""
-		if page.isdigit() and int(page) > 0:
+		if page is not None and page.isdigit() and int(page) > 0:
 			page = int(page) - 1
 			return page
 		else:
-			return HttpResponse(status=404)
+			return 0
 
 	def __str__(self):
 		return str(self.__dict__)
+```
+
+Шаблон `html`
+
+```html
+<!--
+Нужен:
+    - page_obj = Объект пагинатор
+	- href_page = Добавить get запрос
+-->
+
+{#{{ page_obj }} <br>#}
+{# Если есть хотя бы больше одной страницы#}
+{% if page_obj.has_other_pages %}
+
+
+
+    {# Добавить кнопки перемещения страниц назад#}
+    {% if page_obj.has_previous %}
+        {# Первая страница #}
+        <a href="?page=1{{ href_page }}">
+            <div class="offer-page">
+                1
+            </div>
+        </a>
+
+
+        <a href="?page={{ page_obj.previous_page_number }}{{ href_page }}">
+            <div class="offer-page">
+                &lt;
+            </div>
+        </a>
+    {% endif %}
+
+
+    {% for p in page_obj.page_range %}
+        {# Выделеть выбранную страницу #}
+        {% if page_obj.number == p %}
+            <div class="offer-page select-offer-page">
+                {{ p }}
+            </div>
+
+            {# Не отображать страницы более N страниц #}
+
+        {% elif p >= page_obj.number|add:page_obj.max_offer_page.0 and p <= page_obj.number|add:page_obj.max_offer_page.1 %}
+            <a href="?page={{ p }}{{ href_page }}">
+                <div class="offer-page">
+                    {{ p }}
+                </div>
+            </a>
+
+        {% endif %}
+    {% endfor %}
+
+    {# Добавить кнопки перемещения страниц вперед#}
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{{ href_page }}">
+            <div class="offer-page">
+                &gt;
+            </div>
+        </a>
+        {# Последняя страница #}
+        <a href="?page={{ page_obj.num_pages }}{{ href_page }}">
+            <div class="offer-page">
+                {{ page_obj.num_pages }}
+            </div>
+        </a>
+    {% endif %}
+{% endif %}
 ```
 
 ## `Cookie` / `Session`
@@ -1580,6 +1695,27 @@ if settings.DEBUG:
 
 ```
 
+-  Для того чтобы получать статические фалы напрямую через `gunicorn` (для отладки) используйте такую конструкцию. `Name_proj/wsgi.py`
+
+	```python
+	import os
+
+	from django.contrib.staticfiles.handlers import StaticFilesHandler
+	from django.core.wsgi import get_wsgi_application
+
+	from market_dajngo import settings
+
+	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'market_dajngo.settings')
+
+	if settings.DEBUG:
+		# Для получения статических файлов при запуске `gunicorn` в режиме отладки 
+		application = StaticFilesHandler(get_wsgi_application())
+	else:
+		application = get_wsgi_application()
+
+	```
+
+
 ---
 
 Подключить `css`
@@ -1897,56 +2033,76 @@ AJAX или асинхронный JavaScript и XML — это набор ме�
 
 В этом примере мы перехватываем синхронную отправку формы, и делаем асинхронный запрос. Плюс мы отправляем имя формы. Чтобы на сервере как-нибудь разграничить запросы. (Например добавить товар в корзину, удалить товар из корзины)
 
-```js
-//   Когда `html`  документ  загружен, создаем  функцию  для  обработки  нажатия
-$(document).ready(function () {
-    // Перехватываем отправку формы
-    $('.КлассФормы').submit(function () {
+1. Для централизованности и порядка ,будет создавать и хранить переменные с адресом сервера.(Нужно создать обязательно до jQuery )
 
-        // Сериализуем данные из формы и имя формы.
-        const dataVAr = $(this).serialize() + '&flag=' + $(this).attr('name')
+    ```html
+    <script>
+    		{# Url сервера который обрабатывает запросы работы корзины#}
+    		const UrlBasketServer = "{% url 'ИменованыйUrl' %}";
+     </script>
 
-        // Отладочная информация
-        console.log("ClickButtonBasket : ")
-        console.log($(this).serialize())
-        console.log($(this).attr('method'))
-        console.log($(this).attr('action'))
-        console.log($(this).attr('name'))
-        console.log(dataVAr)
+    {# jQuery #}
+    <script src="{% static 'mainapp/js/jquery-3.6.0.min.js' %} " type="text/javascript"></script>
+    {# Корзина JS #}
+    <script src="{% static 'mainapp/js/basket.js' %} " type="text/javascript"></script>
+    ```
+
+2. Пример формы для отправки асинхронных запросов. (`Django` обязательно требует наличие `{{ csrf_token }}` в любой форме [+](https://stackoverflow.com/questions/5100539/django-csrf-check-failing-with-an-ajax-post-request))
+
+    ```html
+    {# Кнопка в добовления товара в корзину #}
+    <form class="AddProductInBasket"
+    	  csrfmiddlewaretoken="{{ csrf_token }}"
+    	  id_product={{ it_product.id }}>
+
+    	<input type="submit" value="В корзину +">
+    </form>
+    ```
+
+3. Создадим обработчик отправки формы, который отправлять синхронные запросы на сервер
+
+    ```js
+    //   Когда `html`  документ  загружен
+    $(document).ready(function () {
+
+    	// Перехватываем отправку формы
+    	$('.КлассФормы').submit(function () {
+
+    		// Получаем данные из формы, и создаем обьект
+    		const dataVar = {
+    			csrfmiddlewaretoken: $(this).attr('csrfmiddlewaretoken'), // Специально имя для токена
+    			id_product: $(this).attr('id_product'),
+    		};
+
+    		// Отладочная информация
+    		console.log(dataVar)
 
 
-		// Отправляем `ajax` запрос
-		$.ajax({
-			// Тело сообщения
-			method: $(this).attr('method'), // Берем метод из формы
-			url: $(this).attr('action'), // Берем url из формы
-			data: dataVAr, // Данные на сервер
+    		// Отправляем `ajax` запрос
+    		$.ajax({
+    			// Тело сообщения
+    			method: "POST", // Http Метод отправки данных на сервер
+    			url: UrlBasketServer, // Берем url из ранее созданной переменной в шаблоне
+    			data: dataVar, // Данные на сервер
 
 
-			// Если при отправке возникли ошибки
-			error: function (response) {
-				const exceptionVar = "Ошибка отправки" + response
-				alert(exceptionVar);
-				console.log(exceptionVar)
-			}
-		}).done(function (msg) { // Получаем ответ от сервера, и обрабатываем его.
-			alert(msg)
-			console.log(msg)
-		});
+    			// Вызовится если при отправке возникли ошибки
+    			error: function (response) {
+    				const exceptionVar = "Ошибка отправки" + response
+    				alert(exceptionVar);
+    				console.log(exceptionVar)
+    			}
+    		}).done(function (msg) { // Получаем ответ от сервера, и обрабатываем его.
+    			alert(msg)
+    			console.log(msg)
+    		});
 
-		// Остановить перезагрузку страницы
-		return false;
-	});
-})
-```
+    		// Остановить перезагрузку страницы
+    		return false;
+    	});
 
-```html
-<form class="КлассФормы" name="ФлагДляРаличия" method="post" action="{% url 'URL_Сервера' %}" >
-    {% csrf_token %}
-    <input type="hidden" name="id-product" value="{{ product_obj.pk }}">
-    <input type="submit" class="otpravka" value="В корзину">
-</form>
-```
+    })
+    ```
 
 ### Получим файлы из форм, и сохранить его на сервере.
 
@@ -2012,6 +2168,7 @@ from typing import Tuple, Any
 
 from django import forms
 from django.core.handlers.wsgi import WSGIRequest
+from django.forms import ValidationError
 
 from .models import Product
 
@@ -2047,6 +2204,29 @@ class ProductForm(forms.ModelForm):
 		widgets = {
 			"name": forms.Textarea(attrs={"cols": 10, "rows": 1}),
 		}
+
+
+
+	def clean(self):
+		"""
+		Этот метод вызвается при проверки всех данных формы
+
+		self.cleaned_data =  Словарь с результатом
+
+		raise ValidationError = Вызвать Если данные не коректные
+		"""
+		...
+
+	def clean_<ИмяПоляФормы>(self):
+		"""
+		Этот метод вызвается при проверки указанной `<ИмяПоляФормы>` данных формы
+
+		self.cleaned_data =  Словарь с результатом
+
+		raise ValidationError = Вызвать Если данные не коректные
+		"""
+		...
+
 
 	@classmethod
 	def save_from_form(cls, request: WSGIRequest, true_method="POST") -> Tuple[bool, Any]:
@@ -2115,6 +2295,7 @@ def form_test(request: WSGIRequest):
 - [Все модели форм](https://docs.djangoproject.com/en/3.2/ref/forms/fields/)
 - [Работа с формами](https://docs.djangoproject.com/en/1.10/topics/forms/#rendering-fields-manually)
 - [Формы не свеянные с моделью](https://www.youtube.com/watch?v=u37FXeVQIpU&t=873s)
+- [Сайт администратора Django](https://docs.djangoproject.com/en/3.2/ref/contrib/admin/)
 
 | Атрибут                    | Описание               |
 | -------------------------- | ---------------------- |
@@ -2207,21 +2388,21 @@ class NameDataBase(models.Model):
 
 `minf` =`db_column="$NameColumn$", verbose_name="$NameColumn$", help_text="$NameColumn$"`
 
-| Тип поля                                                          | Описание                                                                                                                                                         | Краткое имя | Шаблон                                                         |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------- |
-| CharField(`max_length=None`)                                      | Поле для хранения строк указанной длинны.                                                                                                                        | mchar       | `$name_var$ = models.CharField(max_length=$len$)`              |
-| TextField()                                                       | Неограниченное текстовое поле                                                                                                                                    | mtext       | `$name_var$ = models.TextField()`                              |
-| DateField(`auto_now=False, auto_now_add=False,`)                  | Для хранения только даты. `auto_now` авто обновления даты при изменении записи, `auto_now_add` авто установка текущей даты при создании записи                   | mdata       | `$name_var$ = models.DateField()`                              |
-| DateTimeField(`auto_now=False, auto_now_add=False,`)              | То же самое что `DateField`, плюс также хранит часы/минуты/секунды.                                                                                              | mtime       | `$name_var$ = models.DateTimeField()`                          |
-| IntegerField()                                                    | Число от -2147483648 - 2147483647                                                                                                                                | mint        | `$name_var$ = models.IntegerField()`                           |
-| PositiveIntegerField(`max_digits=9, decimal_places=2`)            | Число от 0 - 2147483647                                                                                                                                          | mpint       | `$name_var$ = models.PositiveIntegerField()`                   |
-| DecimalField(`max_digits=9, decimal_places=2`)                    | Десятичное число с фиксированной точностью, `max_digits` максимальное количество цифр в числе,`decimal_places` количество знаков после запятой                   |             |                                                                |
-| ---                                                               | ---                                                                                                                                                              | ---         | ---                                                            |
-| BinaryField()                                                     | Поле для хранения необработанных двоичных данных. Обычно в 99% случаях лучше хранить файлы вне БД, потому получать большие данные из БД долго.                   | mbin        | `$name_var$ = models.BinaryField()`                            |
-| FileField(`upload_to=None`)                                       | Поле для загрузки файла. Хранит только путь к файлам, сами файлы расположены вне БД. Про хранение файлов [Сохраняем файлы в БД](#Как%20хранить%20файлы%20в%20БД) | mfile       |                                                                |
-| ImageField(`upload_to=None, height_field=None, width_field=None`) | Хранить путь к изображению                                                                                                                                       | mimg        | `$name_var$ = models.ImageField(upload_to=f"photo/%Y/%m/%d/")` |
-| ---                                                               |                                                                                                                                                                  |             |                                                                |
-|                                                                   |                                                                                                                                                                  |             |                                                                |
+| Тип поля                                                                    | Описание                                                                                                                                                                                                                                                  | Краткое имя | Шаблон                                                         |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------- |
+| CharField(`max_length=None`)                                                | Поле для хранения строк указанной длинны.                                                                                                                                                                                                                 | mchar       | `$name_var$ = models.CharField(max_length=$len$)`              |
+| TextField()                                                                 | Неограниченное текстовое поле                                                                                                                                                                                                                             | mtext       | `$name_var$ = models.TextField()`                              |
+| DateField(`auto_now=False, auto_now_add=False,`)                            | Для хранения только даты. `auto_now` авто обновления даты при изменении записи, `auto_now_add` авто установка текущей даты при создании записи                                                                                                            | mdata       | `$name_var$ = models.DateField()`                              |
+| DateTimeField(`auto_now=False, auto_now_add=False,`)                        | То же самое что `DateField`, плюс также хранит часы/минуты/секунды.                                                                                                                                                                                       | mtime       | `$name_var$ = models.DateTimeField()`                          |
+| IntegerField()                                                              | Число от -2147483648 - 2147483647                                                                                                                                                                                                                         | mint        | `$name_var$ = models.IntegerField()`                           |
+| PositiveIntegerField(`max_digits=9, decimal_places=2`)                      | Число от 0 - 2147483647                                                                                                                                                                                                                                   | mpint       | `$name_var$ = models.PositiveIntegerField()`                   |
+| DecimalField(`max_digits=9, decimal_places=2`)                              | Десятичное число с фиксированной точностью, `max_digits` максимальное количество цифр в числе,`decimal_places` количество знаков после запятой                                                                                                            |             |                                                                |
+| ---                                                                         | ---                                                                                                                                                                                                                                                       | ---         | ---                                                            |
+| BinaryField()                                                               | Поле для хранения необработанных двоичных данных. Обычно в 99% случаях лучше хранить файлы вне БД, потому получать большие данные из БД долго.                                                                                                            | mbin        | `$name_var$ = models.BinaryField()`                            |
+| FileField(`upload_to=None`)                                                 | Поле для загрузки файла. Хранит только путь к файлам, сами файлы расположены вне БД. Про хранение файлов [Сохраняем файлы в БД](#Как%20хранить%20файлы%20в%20БД)                                                                                          | mfile       |                                                                |
+| ImageField(`upload_to=None, height_field=None, width_field=None`)           | Хранить путь к изображению                                                                                                                                                                                                                                | mimg        | `$name_var$ = models.ImageField(upload_to=f"photo/%Y/%m/%d/")` |
+| ---                                                                         | ---                                                                                                                                                                                                                                                       |             |                                                                |
+| SlugField(`max_length=255, allow_unicode=True, unique=True, db_index=True`) | Слаг используют как альтернативу `id` для записей, суть в том что мы можем указывать в слаге буквы.`allow_unicode` при `True` разрешает символы `UTF-8`, `unique=True` должен быть уникальным, `db_index=True` индексировать столбец для быстрого поиска. |             |                                                                |
 
 ### Как хранить файлы в БД
 
@@ -2539,6 +2720,10 @@ tmp.save()
 - Чисты `SQL` запросы создают объект `RawQuerySet`. Он такой же ленивый, как и `QuerySet` и выполняется только при чтении переменной. Вы также можете посмотреть `SQL` запроса в `<RawQuerySet>.query`
 - Обратите внимание, что мы не можем сделать что-то вроде `.raw(select * from tabel where col in (%s), ["1,2,3"])`, все это экранируется и НЕ будет равно запросу `select * from tabel where col in (1,2,3)`. В этом случае нужно указывать для каждого элемента знак `%s`, в итоге правильный запрос будет выглядеть `.raw("select * from tabel where in (%s,%s,%s)",["1","2","3"])`
 
+- Настройки SQL находяться в ![настройка sql](_attachments/Pasted%20image%2020211120220014.png)
+
+- Для того чтобы выполнить форматировать строки, используете функцию `concat` - `ILIKE concat('%%',%s,'%%')`.(Если вам нужно поставить действительно только знак процента `%` то напишите его два раза )
+
 ---
 
 Если `params == list или tuple` то для получения их в `raw_query` нужно указать `%s`
@@ -2737,9 +2922,10 @@ class $NameModel$Admin(admin.ModelAdmin):
 	#	- list_display=('get_html_photo', )
 	#	- readonly_fields=('get_html_photo', )
 	#	mark_safe - Явно пометьте строку как безопасную для целей вывода (HTML)
+	#   format_html - Можно форматировать строки
 	#	"""
     #    if obj.image_product:
-    #        return mark_safe(f"<img src='{obj.image_product.url}' style='object-fit: contain;' width=150 height=150>")
+    #        return format_html(f"<img src='{obj.image_product.url}' style='object-fit: contain;' width=150 height=150>")
 	# Имя столбца в админ панели.
     ##get_html_photo.short_description = "$Any5$"
 
@@ -2775,17 +2961,32 @@ class $NameModel$Admin(admin.ModelAdmin):
 	# actions = [""]  # Регистрируем действия
 
 	# prepopulated_fields = {"slug": ("name",)}  # Авто заполнение слага URL на основе столбца
-	# date_hierarchy = "$DataCreate$" # Поля, в котором содержится дата создания
+	# date_hierarchy = "$DataCreate$" # Поля, в котором содержится дата создания. Будет полоса хроналогии
 
 	# readonly_fields = ("",)  # Поля которые можно только смотреть, но не редактировать.
 	# Порядок отображения всех полей при редактировании записи, можно указывать картеж из имен
 	# тогда формы будут в одну строку. (По умолчанию каждая формы на новой строке)
     # fields = ("",)
 
+	# form = ДополнительнаяМодельФормы
+	# autocomplete_fields = ("ПоляВнешнегоКлюча",) # Добавить Поиск по указзаным полям ForeignKey/ManyToManyField
+	# raw_id_fields = ("ПоляВнешнегоКлюча",) # Тоже что и `autocomplete_fields` только другой вид
+
 
 	def save_model(self, request, obj, form, change):
-		# Этот метод вызывается при нажатии кнопки сохранить
+		"""
+		Этот метод вызывается при нажатии кнопки сохранить
+		"""
 		super().save_model(request, obj, form, change)
+
+
+	def get_form(self, request, obj=None, **kwargs):
+		"""
+		Вызывается при получении формы для редактирования записи
+		"""
+		form = super().get_form(request, obj, **kwargs)
+		#form.base_fields[""]
+		return form
 
 ```
 
@@ -2796,6 +2997,8 @@ admin.site.register(NameTable)
 ```
 
 ---
+
+## `Inline` - обьединение форм редактирования моделей
 
 Если у нас есть связанные друг с другом модели, то мы можем объединить редактирование их в админ панели для этого есть `StackedInline`(Большой вариант) и `TabularInline`(Компактный вариант). У них одинаковый функционал [+](https://docs.djangoproject.com/en/3.2/ref/contrib/admin/#inlinemodeladmin-objects)
 
@@ -2837,6 +3040,18 @@ class $AnyName$(admin.TabularInline):
 
 ---
 
+Если у вас много внешних ключей, то можно добавить поиск к выпадающему списку `autocomplete_fields = ['Поле']` [+](https://docs.djangoproject.com/en/3.2/ref/contrib/admin/#django.contrib.admin.ModelAdmin.autocomplete_fields)
+
+![autocomplete_fields](_attachments/Pasted%20image%2020211122152830.png)
+
+Есть еще такой вариант для поиска внешнего ключа `raw_id_fields = ['Поле']` [+](https://docs.djangoproject.com/en/3.2/ref/contrib/admin/#django.contrib.admin.ModelAdmin.raw_id_fields)
+
+![raw_id_fields](_attachments/Pasted%20image%2020211122153929.png)
+
+---
+
+## `actions` - Действия
+
 Действия `actions`. Они часто используются для переключения каких либо булевых значений, метод который указан в `actions` будет доступен для выполения. Этот метод принимает запрос и модель БД.
 
 ![actions](_attachments/9e205245689a729bc783778c9b2e9d33.png)
@@ -2870,6 +3085,43 @@ class <ЛюбоеИмя>(admin.ModelAdmin):
 
 ```
 
+## Кастомный шаблон для редакирования
+
+Вы можете полностью переопределить страницу для редактирования модели в админ панели.
+
+```python
+from django.contrib import admin
+from .models import *
+
+
+@admin.register($NameModel$) # Регистрируем модель БД, с классом `admin.ModelAdmin`
+class $NameModel$Admin(admin.ModelAdmin):
+
+
+	change_form_template = "ИмяПриложения/admin.html" # Путь к кастомному шаблону
+```
+
+Такой шаблон выполняться когда стандартная форма редактирования модели полностью прогрузится. (Это нужно напри мер для добавления JavaScript логики)
+`"ИмяПриложения/admin.html"`
+
+```python
+{% extends 'admin/change_form.html' %}
+{% load static %}
+
+
+{% block admin_change_form_document_ready %}
+	{{ block.super }}
+
+
+    Свой текст
+    <script>
+		console.log("123")
+    </script>
+
+
+{% endblock %}
+```
+
 # `apps.py` = Настройки для приложения
 
 В этом файле нужно создавать настройки только для проекта.
@@ -2889,6 +3141,14 @@ class MyappConfig(AppConfig):
 ## Регистрация пользователь
 
 Мы будем использовать стандартную модель `Django` для регистрации пользователей. А для регистрации переопределим стандартную форму `UserCreationForm`
+
+- Получить модель пользователя можно из `get_user_model`
+
+    ```python
+    from django.contrib.auth import get_user_model
+    # Получить модель пользователя
+    User = get_user_model()
+    ```
 
 ![UserCreationForm](_attachments/2db152ceac77dfee17c614fd4029d03c.png)
 
@@ -3237,7 +3497,7 @@ def logout_user(request: WSGIRequest):
 	return redirect("login_user")  # Перенаправить на страницу после выхода
 ```
 
-# Тестирование!!!
+# Тестирование !!!
 
 [Тестирование приложений Django](https://developer.mozilla.org/ru/docs/Learn/Server-side/Django/Testing)
 
@@ -3300,4 +3560,32 @@ from django.core.cache import cache
 count_all = cache.get("count_ch")
 if not cache.get("count_ch"):
 	count_all = cache.get_or_set('count_ch', self.get_count(), timeout=60)
+```
+
+## Кеширование `RawQuerySet`
+
+Для того чтобы кешировать результат чистого `SQL` запроса необходимо его вызвать(потому что он ленивый). Для этого мы используем генератор списков `[dict(cow.__dict__) for cow in sql_req]`, и записываем его в кеш. Он будет также корректно работать как и обычный `RawQuerySet`
+
+```python
+	@staticmethod
+	def <ИмяМетодаВ_Предстовлении>() -> list[<Модель>]:
+
+
+
+		_name_ch = "ИмяКлючаВкеше"
+
+
+		list_res = cache.get(_name_ch)
+		if not cache.get(_name_ch):
+			sql_req = <Модель>.objects.raw("""<SQL запрос>""")
+
+			list_res = cache.get_or_set(
+					_name_ch,
+
+					[dict(cow.__dict__) for cow in sql_req]
+
+					, timeout=60)
+
+
+		return list_res
 ```
