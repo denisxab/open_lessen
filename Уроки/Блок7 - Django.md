@@ -63,8 +63,32 @@ from pathlib import Path
 
 
 # Конфиденциальность ######################################################################################
-import __dont_publish
-__dont_publish.run() # Создаем переемные окружения
+
+def set_environ_from_file_env(path: str):
+	"""
+	Прочитать файл в формате `.env` и добавить эти данные в переменные окружения
+	"""
+	from string import whitespace
+	from os.path import splitext
+	
+	# Проверка на корректное расширения
+	if splitext(path)[1] != ".env":
+		raise FileExistsError('Файл должен иметь расширение `.env`')
+	# Парсим файл
+	with open(path, 'r') as f:
+		res = {}
+		for line in f:
+			tmp = line.translate({ord(c): None for c in whitespace})
+			if not tmp.startswith('#') and tmp != '':
+				tm = line.replace('\n', '').split('=')
+				res[tm[0]] = tm[1]
+	# Добавляем в переменные окружения данные из файла
+	os.environ.update(res)
+	
+	
+# Добавляем переменные окружения из файла
+set_environ_from_file_env("__env.env")
+
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY") # Секретный ключ, который нужно держать в  тайне. Например получать из переменных окружения
 ############################################################################################################
 
@@ -1062,7 +1086,8 @@ class page_obj_cast:
 		:param paginate_by: Колличество элементов на странице
 		:param is_page: Текущая страница
 		:param count: Всего записей
-
+		:max_offer_page: Сколько отображать цифр страниц 
+		
 		| Метод, Атрибут                | Описание                                                                                                  |
 		| ----------------------------- | -------------------------------------------------------------- |
 		| `page`.number                 | Номер для этой страницы, отсчитываемый от 1.                   |
@@ -1075,7 +1100,6 @@ class page_obj_cast:
 		| `page`.num_pages              | Общее количество страниц.                                      |
 		| `page`.page_range             | Итератор для страниц                                           |
 		| `page`.max_offer_page         | Сколько страниц предлагать в баре для переключения             |
-		| `page`.count                  | Общее количество                                               |
 		"""
 		self.number = is_page + 1
 		self.num_pages = count // paginate_by + (1 if count % paginate_by != 0 else 0)
@@ -2216,25 +2240,27 @@ class NameDataBase(models.Model):
 | ImageField(`upload_to=None, height_field=None, width_field=None`)           | Хранить путь к изображению                                                                                                                                                                                                                                | mimg        | `$name_var$ = models.ImageField(upload_to=f"photo/%Y/%m/%d/")` |
 | ---                                                                         | ---                                                                                                                                                                                                                                                       |             |                                                                |
 | SlugField(`max_length=255, allow_unicode=True, unique=True, db_index=True`) | Слаг используют как альтернативу `id` для записей, суть в том что мы можем указывать в слаге буквы.`allow_unicode` при `True` разрешает символы `UTF-8`, `unique=True` должен быть уникальным, `db_index=True` индексировать столбец для быстрого поиска. |             |                                                                |
+| ---                                                                         | ---                                                                                                                                                                                                                                                       |             |                                                                |
+| JSONField()                                                                 | Хранить данные в формате `jsonb`                                                                                                                                                                                                                          |             |                                                                |
 
 ### Общие параметры для полей модели БД
 
 [Приведенные аргументы доступны для всех полей. Все они не обязательны.](https://djbook.ru/rel3.0/ref/models/fields.html#field-options)
 
-| Аргумент         | Описание                                                                                                                                |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `null`           | Пусто значение равно `NULL`                                                                                                             |
-| `blank`          | Поле может быть пустым                                                                                                                  |
-| `unique`         | Поля должно быть уникальным в своем столбце                                                                                             |
-| `db_column`      | Имя колонки в базе данных.                                                                                                              |
-| `verbose_name`   | Имя колонки в админ панели.                                                                                                             |
-| `db_index`       | Индексировать столбец для быстрого поиска                                                                                               |
-| `default`        | Значение по умолчанию, можно указать как переменную, так и функцию                                                                      |
-| `editable`       | При `False`, поле не будет отображаться в админке                                                                                       |
-| `error_messages` | Позволяет переопределить сообщения ошибки для поля                                                                                      |
-| `help_text`      | Подсказка, отображаемая под полем в интерфейсе администратора. Это полезно для описания поля, даже если модель не используется в форме. |
-| `primary_key`    | При `True` это поле будет первичным ключом.                                                                                             |
-| `validators`     | Список валидаторов для поля                                                                                                             |
+| Аргумент              | Описание                                                                                                                                |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `null` = False        | Если `False` то `NOT NULL` (Столбец должен быть заполненною). Если `True` может быть пустым. (Проверка на уровне БД)                    |
+| `blank` = False       | Если `False`Столбец должен быть заполненною. Если `True` может быть пустым. (Проверка на уровне приложения)                             |
+| `unique` = False      | Поля должно быть уникальным в своем столбце                                                                                             |
+| `db_column`           | Имя колонки в базе данных.                                                                                                              |
+| `verbose_name`        | Имя колонки в админ панели.                                                                                                             |
+| `db_index` = False    | Индексировать столбец для быстрого поиска                                                                                               |
+| `default`             | Значение по умолчанию, можно указать как переменную, так и функцию                                                                      |
+| `editable`            | При `False`, поле не будет отображаться в админке                                                                                       |
+| `error_messages`      | Позволяет переопределить сообщения ошибки для поля                                                                                      |
+| `help_text`           | Подсказка, отображаемая под полем в интерфейсе администратора. Это полезно для описания поля, даже если модель не используется в форме. |
+| `primary_key` = False | При `True` это поле будет первичным ключом.                                                                                             |
+| `validators`          | Список валидаторов для поля                                                                                                             |
 
 ### Валидаторы для поля модели БД
 
@@ -2692,6 +2718,41 @@ a = model.object.all()
 ## PostgreSQL
 
 [PostgreSQL](../Django/PostgreSQL.md)
+
+## Создать собственный тип столбца
+
+В редких случаях вам может пригодиться возможность создавать свои типы данных для БД. Для этого переопределите класс `models.Field` [+](https://djbook.ru/rel1.4/howto/custom-model-fields.html)
+
+```python
+from django.db import models
+
+
+class JsonField(models.Field):
+	# Описание поля
+	description = "A hand of cards (bridge style)"
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
+	def db_type(self, connection) -> str:
+		"""
+		:param connection: Подключение к БД
+		:return: Название типа данных которое запишется в БД
+		"""
+		# Подключение должно быть через драйвер PostgreSQL.
+		if connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+			return 'json'
+		else:
+			raise ValueError(
+					f"Данный тип поддерживается только в PostgreSQL. Но не в `{connection.settings_dict['ENGINE']}`")
+
+
+class JsonModel(models.Model):
+	objects = None
+	data_json = JsonField(max_length=600, db_column='Json', default='123', blank=False)
+	data = models.TextField(blank=False, max_length=255, default='321')
+
+```
 
 # `admin.py` = Django Admin панель
 

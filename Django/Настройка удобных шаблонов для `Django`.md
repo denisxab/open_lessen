@@ -322,19 +322,36 @@ class $NameModel$Form(forms.ModelForm):
         - `settings.py-tpl` (Изменить и добавить)
 
         ```python
-        # Конфиденциальность ######################################################################################
-        import __dont_publish
-        __dont_publish.run() # Создаем переемные окружения
-        SECRET_KEY = os.getenv("DJANGO_SECRET_KEY") # Секретный ключ, который нужно держать в  тайне. Например получать из переменных окружения
-        ############################################################################################################
+        # Конфиденциальность
 
-        # Локализацтя ##############################################################################################
+        def set_environ_from_file_env(path: str):
+        	"""
+        	Прочитать файл в формате `.env` и добавить эти данные в переменные окружения
+        	"""
+        	# Проверка на корректное расширения
+        	if splitext(path)[1] != ".env":
+        		raise FileExistsError('Файл должен иметь расширение `.env`')
+        	# Парсим файл
+        	with open(path, 'r') as f:
+        		res = dict(tuple(line.replace('\n', '').split('='))
+        				   for line in f
+        				   if not line.startswith('#'))
+        	# Добавляем в переменные окружения данные из файла
+        	os.environ.update(res)
+
+        # Добовляем переменные окружения из файла
+        set_environ_from_file_env(`__env.env`)
+
+        SECRET_KEY = os.getenv("DJANGO_SECRET_KEY") # Секретный ключ, который нужно держать в  тайне. Например получать из переменных окружения
+
+
+        # Локализацтя
         LANGUAGE_CODE = 'ru' # Язык сервера
         USE_I18N = True # Логическое значение, указывающее, должна ли быть включена система перевода Django.
         TIME_ZONE = 'Europe/Moscow' #  Часовой пояс
         USE_L10N = True # Логическое значение, указывающее, будет ли включено локализованное форматирование данны
         USE_TZ = True # Логическое значение, указывающее, будут ли даты по умолчанию учитывать часовой пояс
-        ############################################################################################################
+
 
         ## Статические файлы
         STATIC_URL = '/static/' # URL-адрес для использования при обращении к статическим файлам, расположенным в STATIC_ROOT.
@@ -350,75 +367,59 @@ class $NameModel$Form(forms.ModelForm):
         ## Изображения
         MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Имя папки в корневом каталоге, для изображений
         MEDIA_URL = '/media/' # Добавляет к файлам префикс
-        ############################################################################################################
+
         ```
 
         - `urls.py-tpl`
         - `wsgi.py-tpl`
 
-		```python
-			import os
+        ```python
+        	import os
 
-			from django.contrib.staticfiles.handlers import StaticFilesHandler
-			from django.core.wsgi import get_wsgi_application
+        	from django.contrib.staticfiles.handlers import StaticFilesHandler
+        	from django.core.wsgi import get_wsgi_application
 
-			from market_dajngo import settings
+        	from market_dajngo import settings
 
-			os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'market_dajngo.settings')
+        	# Изменить `<ИмяПроекта>` на коректное имяя !!!
+        	os.environ.setdefault('DJANGO_SETTINGS_MODULE', '<ИмяПроекта>.settings')
 
-			if settings.DEBUG:
-				# Для получения статических файлов при запуске `gunicorn` в режиме отладки
-				application = StaticFilesHandler(get_wsgi_application())
-			else:
-				application = get_wsgi_application()
+        	if settings.DEBUG:
+        		# Для получения статических файлов при запуске `gunicorn` в режиме отладки
+        		application = StaticFilesHandler(get_wsgi_application())
+        	else:
+        		application = get_wsgi_application()
 
-		```
+        ```
 
-    - `__dont_publish.py-tpl` (+) Скрипт который устанавлевает в переменные окружения все секретные данные, его мы добовляем в `.gitignore` и держим его в тайне.
+    - `__env.env-tpl` (+) Файл который хранит приватные данные. Эти данные мы будем добовляеть в переменные окружения, и использовать их в проекте. Этот файл мы добовляем в `.gitignore` и держим его в тайне.
 
         ```python
-        """
-        Эти переменные окружения существуют только внутри запущенной программы !
-
-        ----
-        Для того чтобы переменные окружения существовали
-        на уровни пользователя то используйте команды, или `bash` скрипты
-
-        - Получить значение переменной окружения
-        `$ echo $ИмяПеременнойОкружения`
-
-        - Создать переменную окружения и установить значение
-        `$ export <ИмяПеременнойОкружения>="<Значение>"`
-        ---
-
-        """
-        import os
-
-
-        def run():
-        	os.environ["DJANGO_SECRET_KEY"] = '{{ secret_key }}'
+        # Ключ для расшифровки сессии
+        DJANGO_SECRET_KEY={{ secret_key }}
         ```
 
     - `manage.py-tpl`
     - `README.md` (+) Описание проекта
     - `requirements.txt` (+) Хранить зависемости
-		```bash
-		asgiref==3.4.1
-		beautifulsoup4==4.10.0
-		Django==3.2.9
-		django-cleanup==5.2.0
-		django-debug-toolbar==3.2.2
-		django-livereload-server==0.3.2
-		gunicorn==20.1.0
-		Pillow==8.4.0
-		psycopg2-binary==2.9.2
-		pytz==2021.3
-		six==1.16.0
-		soupsieve==2.3.1
-		sqlparse==0.4.2
-		tornado==6.1
-		urwid==2.1.2
-		```
+
+        ```bash
+        asgiref==3.4.1
+        beautifulsoup4==4.10.0
+        Django==3.2.9
+        django-cleanup==5.2.0
+        django-debug-toolbar==3.2.2
+        django-livereload-server==0.3.2
+        gunicorn==20.1.0
+        Pillow==8.4.0
+        psycopg2-binary==2.9.2
+        pytz==2021.3
+        six==1.16.0
+        soupsieve==2.3.1
+        sqlparse==0.4.2
+        tornado==6.1
+        urwid==2.1.2
+        ```
 
     - `dump.json` (+) Хранить сохранения БД
     - `gunicorn.conf.py` (+) Настройки для `gunicorn`
@@ -426,5 +427,5 @@ class $NameModel$Form(forms.ModelForm):
         ```bush
         /.idea
         /venv
-        __dont_publish.py
+        __env.env
         ```
