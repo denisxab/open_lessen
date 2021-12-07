@@ -1913,7 +1913,7 @@ FROM товары;
 
 Отличия `json` от `jsonb`
 
-- ![Отличия json от jsonb](_attachments/Pasted%20image%2020211126191544.png)
+- ![Отличия json от jsonb](_attachments/a6fdce5f3ccd390ba2074690d83c818d.png)
 
 Преобразовать текст в `jsonb`
 

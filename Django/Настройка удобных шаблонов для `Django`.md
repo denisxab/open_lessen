@@ -323,24 +323,19 @@ class $NameModel$Form(forms.ModelForm):
 
         ```python
         # Конфиденциальность
+		def read_env_file_and_set_from_venv(file_name: str):
+			"""Чтение переменных окружения из указанного файла, и добавление их в ПО `python`"""
+			with open(file_name, 'r', encoding='utf-8') as _file:
+				res = {}
+				for line in _file:
+					tmp = re.sub(r'^#[\s\w\d\W\t]*|[\t\s]', '', line)
+					if tmp:
+						k, v = tmp.split('=',1)
+						res[k] = v
+			os.environ.update(res)
+			print(res)
+		read_env_file_and_set_from_venv('./__env.env')
 
-        def set_environ_from_file_env(path: str):
-        	"""
-        	Прочитать файл в формате `.env` и добавить эти данные в переменные окружения
-        	"""
-        	# Проверка на корректное расширения
-        	if splitext(path)[1] != ".env":
-        		raise FileExistsError('Файл должен иметь расширение `.env`')
-        	# Парсим файл
-        	with open(path, 'r') as f:
-        		res = dict(tuple(line.replace('\n', '').split('='))
-        				   for line in f
-        				   if not line.startswith('#'))
-        	# Добавляем в переменные окружения данные из файла
-        	os.environ.update(res)
-
-        # Добовляем переменные окружения из файла
-        set_environ_from_file_env(`__env.env`)
 
         SECRET_KEY = os.getenv("DJANGO_SECRET_KEY") # Секретный ключ, который нужно держать в  тайне. Например получать из переменных окружения
 
