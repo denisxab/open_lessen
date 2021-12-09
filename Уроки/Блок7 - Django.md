@@ -2358,6 +2358,28 @@ class NameDataBase(models.Model):
 | `help_text`           | Подсказка, отображаемая под полем в интерфейсе администратора. Это полезно для описания поля, даже если модель не используется в форме. |
 | `primary_key` = False | При `True` это поле будет первичным ключом.                                                                                             |
 | `validators`          | Список валидаторов для поля                                                                                                             |
+| `choices`             | Указать список доступных значений у столбца                                                                                             |
+
+`choices` = Указать список доступных значений у столбца. (Можно указать массив вместо класса) [+](https://djbook.ru/rel3.0/ref/models/fields.html#choices)
+
+```python
+class Person(models.Model):
+	objects = None
+
+	name = models.CharField(max_length=255, verbose_name="Имя Пользователя")
+
+	class FamilyStatus (models.TextChoices):
+		# ЛюоеИмя = ЗначениеВ_БД, нешнееЗначениеДляПользоателей
+		FRESHMAN = 1, 'Положение 1'
+		SOPHOMORE = 2, 'Положение 2'
+		JUNIOR = 3, 'Положение 3'
+		SENIOR = 4, 'Положение 4'
+		GRADUATE = 5, 'Положение 5'
+
+	family_status = models.IntegerField(verbose_name="Семейное положение", choices=FamilyStatus.choices)
+```
+
+![`choices`](_attachments/e82ebe0f398772f8b84fe75856570140.png)
 
 ### Валидаторы для поля модели БД
 
@@ -2760,6 +2782,8 @@ namedtuplefetchall(_res)
 | `QuerySet`.first()                                                    | Получить первую запись из `QuerySet`                                                                                                           |             |                          |
 | `QuerySet`.aggregate(`<АгригатнаяФункция>('Столбец')`)                | Агрегатные функции [+](https://docs.djangoproject.com/en/3.2/ref/models/querysets/#aggregate)                                                  |             |                          |
 | `QuerySet`.values_list(`name1, name2, ... , flat=False, named=False`) | Выбрать конкретные колонки из Таблицы.`flat` = Если `False` Возвращает кортеж, Если `True` список,`named` = Если `True` возвращает `nametuple` |             |                          |
+| `QuerySet`.select_related(`<ИмяСтолбцаС*ВнешнимКлючом>`)              | Выполнить `JOIN` по указанному столбцу                                                                                                         |             |                          |
+| `QuerySet`.prefetch_related(`<ИмяСтолбцаС*ВнешнимКлючом>`)            | Выполняет два запроса, а потом объединяет их. `WHERE id IN (...,)`                                                                             |             |                          |
 
 ---
 
