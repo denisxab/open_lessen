@@ -3511,6 +3511,11 @@ class RegisterForm(UserCreationForm):
 
 - [Использование системы аутентификации пользователя](https://djbook.ru/rel3.0/topics/auth/default.html)
 - [Этот документ предоставляет справочные материалы по API для компонентов Django's система аутентификации.](https://docs.djangoproject.com/en/3.2/ref/contrib/auth/)
+- Проверить пароль пользователя:
+    ```python
+    from django.contrib.auth.hashers import check_password
+    check_password(<ПарольДляПрвоерки>,<ВерныйХешПароля>)
+    ```
 
 ---
 
@@ -3724,7 +3729,7 @@ urlpatterns = [
 `Name_app/templates/Name_app/reg.html`
 
 ```html
-{% cache 60 name %}
+{% cache <СекндЖизни> <Переменная> %}
 
 	...
 
@@ -3778,3 +3783,199 @@ if not cache.get("count_ch"):
 
 		return list_res
 ```
+
+# Локализация `Djnago`
+
+## Настройка
+
+1. Установить пакет. [Документация](https://django-modeltranslation.readthedocs.io/en/latest/installation.html)
+
+    ```bash
+    pip install django-modeltranslation
+    ```
+
+1. Добавить в `Name_proj->settings.py->MIDEDLEWARE`
+   `settings.py`
+
+    ```python
+    INSTALLED_APPS = [
+    	'modeltranslation', # В самый верх
+    	...
+    	...
+
+    ]
+
+    MIDDLEWARE = [
+    	...
+    	...
+    	'django.middleware.locale.LocaleMiddleware',
+    ]
+
+    LANGUAGE_CODE = 'ru'
+    USE_I18N = True
+
+
+    # Путь к папке с переводами
+    LOCALE_PATHS = [
+    	os.path.join(BASE_DIR, "locale"),
+    ]
+
+    # Языки, на которые мы хотим делать перевод
+    gettext = lambda s: s
+    LANGUAGES = (
+    	('ru', gettext('Russia')),
+    	('en', gettext('English')),
+    )
+
+    ```
+
+1. Добавить маршрутизацию в `Name_proj->urls.py.py->urlpatterns`.
+   `urls.py`
+
+    ```python
+    from django.conf.urls.i18n import i18n_patterns
+    from django.conf.urls.static import static
+    from django.contrib import admin
+    from django.urls import path, include
+
+    from test import settings
+
+    # URL без локализации
+    urlpatterns = [
+    	...
+    	path('i18/', include('django.conf.urls.i18n')),
+    	...
+    ]
+
+    # Все URL которые должны поддерживать перевод
+    urlpatterns += i18n_patterns(
+    		path('admin/', admin.site.urls),
+    		path("api-auth/", include('rest_framework.urls')),
+    		path('', include("mainapp.urls")),
+    )
+    ```
+
+1. Добавить (куда-нибудь на видное место) в шаблон, форму для переключения языка.
+
+    ```html
+    {% load i18n %}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    	<meta charset="UTF-8">
+    	<title>...</title>
+
+
+    </head>
+    <body>
+
+
+
+    	<form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+    		<input name="next" type="hidden" value="{{ redirect_to }}">
+    		<select name="language">
+    			{% get_current_language as LANGUAGE_CODE %}
+    			{% get_available_languages as LANGUAGES %}
+    			{% get_language_info_list for LANGUAGES as languages %}
+    			{% for language in languages %}
+    				<option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %}
+    						selected{% endif %}>
+    					{{ language.name_local }} ({{ language.code }})
+    				</option>
+    			{% endfor %}
+    		</select>
+    		<input type="submit" value="Go">
+    	</form>
+
+
+
+    </body>
+    </html>
+    ```
+
+---
+
+## Для перевода данных в БД
+
+1. Создать файл `Name_App->translation.py`. Указать какие столбцы в БД нужно переводить
+   `translation.py`
+
+    ```python
+    from modeltranslation.translator import register, TranslationOptions
+    from mainapp.models import <ИмяМоделиБд>
+
+
+    # Регистрируем Модель БД
+    @register(<ИмяМоделиБд>)
+    class <ЛюбоеИмя>(TranslationOptions):
+    	# Атрибуты(Столбцы) модели которые мы хотим перевести
+    	fields = ('<>',)
+    ```
+
+1. Для того чтобы корректно работать админ панель со столбцами перевода, нужна также переделать админ панель, в общем случае все что вам нужно это поменять базовый класс с `admin.ModelAdmin` на `TranslationAdmin`. Также существуют аналоги `TabularInline` = `TranslationTabularInline` / `StackedInline` = `TranslationStackedInline` [+](https://django-modeltranslation.readthedocs.io/en/latest/admin.html)
+   `admin.py`
+
+    ```python
+    from django.contrib import admin
+    from modeltranslation.admin import TranslationAdmin
+
+    from .models import *
+
+    @admin.register(<ИмяМоделиБд>)
+    class <ЛюбоеИмя>(TranslationAdmin):
+    	list_display = ("name", "rang", "user")  # Имя столбца которые мы хотим видеть в админ панели
+    	# list_display_links = ("")  # Указать имя столбца через которое можно перейти редактированию записи
+    	search_fields = ("name",)  # Указать по каким столбцам можно делать поиск
+    	# list_editable = ("name",)  # Столбцы которые можно редактировать не открывая всю запись
+    	# list_filter = ("")  # Столбцы, по к%%%%оторым можно фильтровать записи
+    	# date_hierarchy = ""  # Поля в котром содержится дата создания
+
+    	# prepopulated_fields = {"slug": ("name",)}  # Авто заполнение слага URL на основе столбца
+    	# readonly_fields = (...,)  # Поля которые можно только смотреть, но не редактировать.
+    	# fields = (...,)  # Порядок отображения полей при редактировании записи
+
+    	save_on_top = False  # Панель с удаление/созданием записи вверху редактирования запси.
+    ```
+
+1. Создать и выполнить миграции. После этого в таблице БД создадутся дополнительные столбцы для перевода текста. [+](https://django-modeltranslation.readthedocs.io/en/latest/commands.html)
+
+    ```bash
+    python manage.py makemigrations;
+    python manage.py update_translation_fields;
+    python manage.py migrate;
+    ```
+
+    Если вы добавили еще один язык в настройки то используете команду
+
+    ```bash
+    python manage.py sync_translation_fields
+    ```
+
+---
+
+## Для перевода статических данных в `html` шаблоне
+
+1. Если мы хотим перевести статический текст в шаблоне, то нужно использовать тег
+
+    ```html
+    {# Подключить теги #}
+    {% load i18n %}
+
+
+
+    {# Создать тег со словом которое нужно переводить #}
+    {% trans '<ЛюбоеСлово>' %}
+    ```
+
+1. Создать папку `locale` в директории проекта. И выполнить команду. После этого создадутся папки с именем языка, а в них будут файлы с расширение `.po` в них мы и указываем перевод слова
+
+    ```bash
+    django-admin makemessages -l <ЯзыкВ_settings_py> -e html
+    ```
+
+1. После того как вы заполнили перевод в файле `.po` зафиксируйте изменения. В итоге у вас будет файл с разширением `.mo`
+
+    ```bash
+     django-admin compilemessages
+    ```
