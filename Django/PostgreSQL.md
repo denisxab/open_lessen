@@ -436,7 +436,7 @@ pgadmin4
 - Установка:
 
     ```bash
-    sudo apt update && sudo  apt install postgresql-plpython3-11
+    sudo apt update &&  sudo apt install postgresql-plpython3-12 postgresql-contrib-12 -y
     ```
 
 - Установка: `Dockerfile` (!!! Изменить данные в переменных окружениях)
@@ -474,7 +474,7 @@ CREATE LANGUAGE plpython3u;
 --CREATE EXTENSION plpython3u;
 ```
 
-![Добавить поддержку языка](_attachments/Pasted%20image%2020211211234730.png)
+![Добавить поддержку языка](_attachments/82fd665d0421bc19f6eadc41d3222d0b.png)
 
 ---
 

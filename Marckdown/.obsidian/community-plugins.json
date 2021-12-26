@@ -1,16 +1,13 @@
 [
   "table-editor-obsidian",
-  "calendar",
   "consistent-attachments-and-links",
   "obsidian-emoji-toolbar",
   "find-unlinked-files",
   "hotkey-helper",
   "obsidian-icons-plugin",
-  "obsidian-languagetool-plugin",
   "obsidian-mind-map",
   "note-refactor-obsidian",
   "obsidian-git",
-  "obsidian-plugin-prettier",
   "darlal-switcher-plus",
   "unique-attachments",
   "cm-editor-syntax-highlight-obsidian",
@@ -22,5 +19,7 @@
   "url-into-selection",
   "remember-cursor-position",
   "shortcuts-extender",
-  "obsidian-kanban"
+  "obsidian-kanban",
+  "obsidian-languagetool-plugin",
+  "markdown-prettifier"
 ]

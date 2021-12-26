@@ -1,6 +1,6 @@
 {
   "strictLineBreaks": true,
-  "spellcheck": false,
+  "spellcheck": true,
   "foldHeading": true,
   "foldIndent": false,
   "defaultViewMode": "preview",
@@ -136,7 +136,33 @@
     "скачался",
     "проксированию",
     "ненажатое",
-    "пагинатор"
+    "пагинатор",
+    "слаги",
+    "| Слаг",
+    "слаге",
+    "централизованности",
+    "Pевизор",
+    "указаннЫЕ",
+    "ключИ",
+    "указаннЫЕ",
+    "сериализованный",
+    "Бекаб",
+    "серелизовать",
+    "Серелизовать",
+    "Диплой",
+    "парсер",
+    "Распарсить",
+    "распарсить",
+    "перерендаринг",
+    "перерендаринг",
+    "Демонтированние",
+    "слайсу",
+    "Десериалезировать",
+    "Алиасы",
+    "отрендеренные",
+    "Деструктурирование",
+    "диплоя",
+    "перерендарега"
   ],
   "pdfExportSettings": {
     "pageSize": "Letter",
@@ -147,5 +173,7 @@
   "newFileFolderPath": "_newFile",
   "promptDelete": true,
   "readableLineLength": false,
-  "lineWrap": true
+  "lineWrap": true,
+  "legacyEditor": false,
+  "livePreview": false
 }

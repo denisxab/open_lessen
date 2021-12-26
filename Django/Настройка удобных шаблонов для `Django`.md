@@ -263,7 +263,7 @@ class $NameModel$Form(forms.ModelForm):
 
 [Все шаблоны в заголовке](#Классы/представления)
 
-# Настройка шаблона приложения
+# Настройка шаблона приложения - Устарело
 
 Шаблон приложения расположен по пути `/venv/lib/python3.9/site-packages/django/conf/app_template`
 
@@ -292,7 +292,7 @@ class $NameModel$Form(forms.ModelForm):
     - `tests.py-tpl`
     - `views.py-tpl`
     - `README.md` (+) Описание приложения, инструкция по добовлению его в проект
-    - `urls.py-tpl` (+) Url маршрутизация
+    - `urls.py-tpl` (+) `Url` маршрутизация
     - `forms.py` (+) Формы
 
         ```python
@@ -307,7 +307,7 @@ class $NameModel$Form(forms.ModelForm):
 
 ---
 
-# Настройке проекта
+# Настройке проекта - Устарело
 
 Шаблон проекта расположен по пути `/venv/lib/python3.9/site-packages/django/conf/project_template`
 
@@ -323,18 +323,18 @@ class $NameModel$Form(forms.ModelForm):
 
         ```python
         # Конфиденциальность
-		def read_env_file_and_set_from_venv(file_name: str):
-			"""Чтение переменных окружения из указанного файла, и добавление их в ПО `python`"""
-			with open(file_name, 'r', encoding='utf-8') as _file:
-				res = {}
-				for line in _file:
-					tmp = re.sub(r'^#[\s\w\d\W\t]*|[\t\s]', '', line)
-					if tmp:
-						k, v = tmp.split('=',1)
-						res[k] = v
-			os.environ.update(res)
-			print(res)
-		read_env_file_and_set_from_venv('./__env.env')
+        def read_env_file_and_set_from_venv(file_name: str):
+        	"""Чтение переменных окружения из указанного файла, и добавление их в ПО `python`"""
+        	with open(file_name, 'r', encoding='utf-8') as _file:
+        		res = {}
+        		for line in _file:
+        			tmp = re.sub(r'^#[\s\w\d\W\t]*|[\t\s]', '', line)
+        			if tmp:
+        				k, v = tmp.split('=',1)
+        				res[k] = v
+        	os.environ.update(res)
+        	print(res)
+        read_env_file_and_set_from_venv('./__env.env')
 
 
         SECRET_KEY = os.getenv("DJANGO_SECRET_KEY") # Секретный ключ, который нужно держать в  тайне. Например получать из переменных окружения
@@ -362,7 +362,6 @@ class $NameModel$Form(forms.ModelForm):
         ## Изображения
         MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Имя папки в корневом каталоге, для изображений
         MEDIA_URL = '/media/' # Добавляет к файлам префикс
-
         ```
 
         - `urls.py-tpl`
@@ -376,7 +375,7 @@ class $NameModel$Form(forms.ModelForm):
 
         	from market_dajngo import settings
 
-        	# Изменить `<ИмяПроекта>` на коректное имяя !!!
+        	# Изменить `<ИмяПроекта>` на корректное имя !!!
         	os.environ.setdefault('DJANGO_SETTINGS_MODULE', '<ИмяПроекта>.settings')
 
         	if settings.DEBUG:
@@ -384,7 +383,6 @@ class $NameModel$Form(forms.ModelForm):
         		application = StaticFilesHandler(get_wsgi_application())
         	else:
         		application = get_wsgi_application()
-
         ```
 
     - `__env.env-tpl` (+) Файл который хранит приватные данные. Эти данные мы будем добовляеть в переменные окружения, и использовать их в проекте. Этот файл мы добовляем в `.gitignore` и держим его в тайне.

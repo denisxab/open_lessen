@@ -439,7 +439,7 @@ with self.assertRaises(<ИмяОшибки>):
 
 Смысл `docttest` завключается в тетсирование небольших независемых функция и методов.
 
-[Документация DocTest](https://docs.python.org/3/library/doctest.html)
+[Документация `DocTest`](https://docs.python.org/3/library/doctest.html)
 
 ```python
 import doctest
@@ -505,6 +505,93 @@ class Test_<Name>(unittest.TestCase):
 
 if __name__ == '__main__':
 	unittest.main()
+```
+
+## `Pytest`
+
+[Документация](https://pytest-docs-ru.readthedocs.io/ru/latest/contents.html#toc)
+
+---
+
+Установка:
+
+```bash
+pip install pytest
+```
+
+---
+
+- Запустить папку с тестами:
+
+    ```bash
+    pytest <ИмяПапки_С_Тестами/Файл_С_Тестами>
+    ```
+
+- Добавить сценарий запуск тестов в `Pycharm`
+    ![Добавить сценарий запуск тестов в `Pycharm`](_attachments/Pasted%20image%2020211218202514.png)
+
+---
+
+```python
+class Test_<Name>:
+
+	def setup(self): # Выполнятся перед вызовом каждого метода
+		...
+
+	def test_<NameMethed>(self): # Все методы должны начинатся с слова `test_`
+		...
+
+	def teardown(self): # Выполнятся после **успешного** выполенния каждого теста
+		...
+
+	def __del__(self): # Деструктор класса
+		...
+```
+
+---
+
+Для того чтобы создать тест, нам необходимо создать функцию, начинающуюся с `test_`, и уже в ней создавать `assert`
+
+```python
+import pytest
+
+def delimeter(a, b):
+	return a / b
+
+# Картеж с именами аргументов, массив со значениями для аргументов
+@pytest.mark.parametrize(("a", "b", "res"), [
+		(10, 2, 5),
+		(20, 2, 10),
+		(12, 2, 6),
+		(10, 2, 5),
+		])
+def test_r(a, b, res):
+	assert delimeter(a, b) == float(res),  "Сообщение об ошибки"
+
+
+
+# Ожидать возникновение ошибки
+@pytest.mark.parametrize(("a", "b", "exception__"), [
+		(10, 0, ZeroDivisionError),
+		(20, '2', TypeError),
+		])
+def test_zero(a, b, exception__):
+	# В контексте должна возникнуть указанная ошибка
+	with pytest.raises(exception__):
+		delimeter(a, b)
+
+
+
+# Пропустить весь тест
+@pytest.mark.skip(reason="Пропуск теста")
+def test_skip():
+	assert True == False
+
+# Пропустить тест в теле функции
+def test_skip_context():
+	if 1/1 == 0:
+		pytest.skip("Пропустить тест из тела функции")
+	assert True == False
 ```
 
 # Логирование - `loguru`

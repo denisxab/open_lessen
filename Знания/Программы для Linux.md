@@ -4,7 +4,7 @@
 yaourt -S yandex-browser-beta
 ```
 
-# Zsh настройка oh my zsh
+# `Zsh` настройка oh my zsh
 
 ## Быстрая настройка `zsh`
 
@@ -19,7 +19,7 @@ curl https://gist.githubusercontent.com/denisxab/7b91e1d09ff8fbe6d8e738a5326e9ce
 1. Установить `zsh`
 
     ```bush
-    sudo apt install zsh
+    sudo apt install zsh \ git sh curl
     ```
 
 1. Установить `oh my zsh` и плагины
@@ -32,11 +32,13 @@ curl https://gist.githubusercontent.com/denisxab/7b91e1d09ff8fbe6d8e738a5326e9ce
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting;
     \
     git clone  https://github.com/marlonrichert/zsh-autocomplete.git ~/.oh-my-zsh/custom/plugins/zsh-autocomplete;
+	\
+	mkdir $ZSH_CUSTOM/plugins/poetry; poetry completions zsh > $ZSH_CUSTOM/plugins/poetry/_poetry
     ```
 
 > Настроить `oh my zsh` `vim ~/.zshrc` (Перезагрузить оболочку командой `. ~/.zshrc`) [Код](https://gist.github.com/denisxab/7b91e1d09ff8fbe6d8e738a5326e9ced)
 
-# micro
+# `micro`
 
 [Исходники](https://github.com/zyedidia/micro#usage)
 
@@ -111,7 +113,7 @@ curl https://gist.githubusercontent.com/denisxab/7b91e1d09ff8fbe6d8e738a5326e9ce
 "scrollbar":true,
 ```
 
-# Vim
+# `Vim`
 
 ## Быстрая настройка `vim`
 
@@ -414,7 +416,7 @@ tmux attach -t ИмяСессии
 tmux attach
 ```
 
-# MC
+# `MC`
 
 ## Быстрая настройка MC
 
@@ -525,7 +527,7 @@ F4
 select-editor
 ```
 
-# NeoVim - 0.5
+# `NeoVim` - 0.5
 
 Приготовление:
 
@@ -866,7 +868,7 @@ sudo npm install -g pyright
 | `bg`           | К определению функции     |
 | `bn`           | Обратное от `bg`          |
 
-# ufw - фаервол
+# `ufw` - фаервол
 
 Установить `ufw`
 
@@ -936,11 +938,11 @@ sudo ufw default allow outgoing
     > ports=53,80,5223,16393:16472/udp
     > ```
 
-# SSH
+# `SSH`
 
 [SSH](../Уроки/Блок6%20-%20Сети.md#SSH)
 
-# FTP
+# `FTP`
 
 [FTP](../Уроки/Блок6%20-%20Сети.md#FTP)
 
@@ -972,7 +974,7 @@ sudo ufw default allow outgoing
 
 ---
 
-# TeamViewer
+# `TeamViewer`
 
 [Скачать](https://www.teamviewer.com/ru/%d1%81%d0%ba%d0%b0%d1%87%d0%b0%d1%82%d1%8c/linux/)
 
@@ -988,13 +990,29 @@ yay -S teamviewer
 sudo systemctl start teamviewerd.service
 ```
 
-# VNC / RDP /
+# `VNC` / `RDP` /
 
-`Arh linux`
+## VNC
 
-```bash
-sudo pacman -S freerdp
-```
+Сервер [+](https://losst.ru/nastrojka-x11vnc-na-ubuntu):
+
+- Установка:
+
+| ОС     | Команда                   |
+| ------ | ------------------------- |
+| Ubuntu | `sudo apt install x11vnc` |
+| Arch   | `sudo pacman -S x11vnc`   |
+
+- Запустить сервер:
+    ```bash
+    x11vnc;
+    ```
+
+---
+
+Клиент:
+
+- Установить `KRDC`
 
 # `Termshark` - перехватывать трафик
 
@@ -1011,7 +1029,7 @@ sudo pacman -S freerdp
 
 ---
 
-# `gping` визуализировать `ping`
+# `gping` - визуализировать `ping`
 
 [Githab gping](https://github.com/orf/gping)
 
@@ -1104,7 +1122,7 @@ Python                           1              6             11              3
 >     "proot-distro login ubuntu" > ubu.sh
 >     ```
 
-# `Virt-Manager`
+# `Virt-Manager` - Виртуальная машина
 
 [Сайт разработчиков](https://virt-manager.org/)
 
@@ -1115,4 +1133,31 @@ sudo pacman -S archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 brid
 ```bash
 sudo systemctl enable libvirtd.service
 sudo systemctl start libvirtd.service
+```
+
+# `fsearch` - Быстрый поиск файлов и папок
+
+Установка [+](https://github.com/cboxdoerfer/fsearch)
+
+Arch Linux
+
+```bash
+yay -S fsearch
+```
+
+Ubuntu [+](https://github.com/cboxdoerfer/fsearch/wiki/Build-instructions)
+
+```bash
+sudo apt install git build-essential automake autopoint autoconf libtool pkg-config intltool autoconf-archive libicu-dev libpcre3-dev libglib2.0-dev libgtk-3-dev libxml2-utils
+```
+
+```bash
+git clone https://github.com/cboxdoerfer/fsearch.git
+cd fsearch
+```
+
+```bash
+./autogen.sh
+./configure
+make && sudo make install
 ```

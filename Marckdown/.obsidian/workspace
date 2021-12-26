@@ -4,24 +4,14 @@
     "type": "split",
     "children": [
       {
-        "id": "7b70ca1792d5a877",
+        "id": "3fa98f21beb6deb1",
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
-            "file": "open_lessen/Уроки/Блок8 - SQL.md",
-            "mode": "source"
-          }
-        }
-      },
-      {
-        "id": "474dcdb85f11d367",
-        "type": "leaf",
-        "state": {
-          "type": "markdown",
-          "state": {
-            "file": "open_lessen/Уроки/дз.md",
-            "mode": "preview"
+            "file": "open_lessen/README.md",
+            "mode": "source",
+            "source": true
           }
         }
       }
@@ -50,7 +40,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "debug_toolbar",
+                "query": "npm install",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -63,7 +53,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 389
+    "width": 389,
+    "collapsed": true
   },
   "right": {
     "id": "7513de9032829514",
@@ -79,7 +70,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "open_lessen/Уроки/дз.md",
+                "file": "open_lessen/README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -96,16 +87,8 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "open_lessen/Уроки/дз.md"
+                "file": "open_lessen/README.md"
               }
-            }
-          },
-          {
-            "id": "4149591b08f810f0",
-            "type": "leaf",
-            "state": {
-              "type": "calendar",
-              "state": {}
             }
           },
           {
@@ -121,19 +104,19 @@
       }
     ],
     "direction": "horizontal",
-    "width": 444
+    "width": 324
   },
-  "active": "474dcdb85f11d367",
+  "active": "3fa98f21beb6deb1",
   "lastOpenFiles": [
-    "open_lessen/Уроки/дз.md",
-    "open_lessen/Уроки/Блок10.md",
-    "open_lessen/Уроки/Блок3 - Алгоритмы.md",
-    "open_lessen/Уроки/Блок9 - Re, Unit-Tests.md",
-    "open_lessen/Уроки/Блок8 - SQL.md",
-    "open_lessen/Уроки/Блок7 - Django.md",
-    "open_lessen/Уроки/Блок6 - Сети.md",
-    "open_lessen/Уроки/Блок5 - ПАП.md",
-    "open_lessen/Уроки/Блок4 - Идеи.md",
-    "open_lessen/Уроки/Блок2 - ООП.md"
+    "open_lessen/README.md",
+    "open_lessen/Django/Для фронта/Webpack.md",
+    "open_lessen/Django/Для фронта/TypeScript.md",
+    "open_lessen/Django/Для фронта/React.md",
+    "open_lessen/Django/Для фронта/Node.js.md",
+    "open_lessen/Django/Для фронта/JS.md",
+    "open_lessen/Django/Для фронта/Css.md",
+    "open_lessen/Django/Для фронта/Программы для фронта.md",
+    "open_lessen/Django/Для фронта/Браузер для web мастера.md",
+    "open_lessen/Django/Деплой.md"
   ]
 }
