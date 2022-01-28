@@ -528,20 +528,22 @@ pip install pytest
     ```
 
 - Добавить сценарий запуск тестов в `Pycharm`
-    ![Добавить сценарий запуск тестов в `Pycharm`](_attachments/Pasted%20image%2020211218202514.png)
+    ![Добавить сценарий запуск тестов в `Pycharm`](_attachments/3ae0c7337e5c1afc261fc083a6e4a162.png)
 
 ---
 
 ```python
+import pytest
+
 class Test_<Name>:
 
 	def setup(self): # Выполнятся перед вызовом каждого метода
 		...
 
-	def test_<NameMethed>(self): # Все методы должны начинатся с слова `test_`
+	def test_<NameMethed>(self): # Все методы должны начинаться со слова `test_`
 		...
 
-	def teardown(self): # Выполнятся после **успешного** выполенния каждого теста
+	def teardown(self): # Выполнятся после **успешного** выполнения каждого теста
 		...
 
 	def __del__(self): # Деструктор класса

@@ -1,6 +1,7 @@
 ---
 title: Obsidian
 data: 24.07.2021
+date updated: 2021-12-29 01:17
 ---
 
 ## Гайд по Obsidian
@@ -38,7 +39,7 @@ Ctrl + D
 
 > Toggle edit/preview mode
 
-При зажатии Ctrl + нажать на вкладку откроется окно синхронного отображения
+При зажатии `Ctrl` + нажать на вкладку откроется окно синхронного отображения
 
 ```bush
  Ctrl + Нажать на кнопку
@@ -136,7 +137,7 @@ Prettier Format: Format the entire note
 ```
 
 > ```bush
-> Alt + l
+> Alt + L
 > ```
 
 ### LanguageTool - Проверка орфографии
@@ -245,7 +246,7 @@ Consistent attachments and links: Check vault consistent
 | `Consistent attachments and links: Convert all embed paths to relative`       | Изменить пути на относительные         |
 | `Consistent attachments and links: Convert all link paths to relative`        | Изменить ссылки на относительные       |
 | `Consistent attachments and links: Delete empty folders`                      | Удалить пустые папки                   |
-| `Consistent attachments and links: Reorganize vault`                          | Настройка путей                        | 
+| `Consistent attachments and links: Reorganize vault`                          | Настройка путей                        |
 
 [Документация Consistent attachments and links ](https://github.com/derwish-pro/obsidian-consistent-attachments-and-links)
 
@@ -282,6 +283,32 @@ shift + ^ (стрелка)
 1. `python -c 'import sys; print(sys.executable)'`
 2. `pip install jupyter --upgrade`
 3. ![Jupyter](_attachments/1cf2d327e4d170a2ed8bd678029b91ba.png)
+
+### Obsidian Footnotes - сноски текст
+
+[Footnotes](https://github.com/akaalias/obsidian-footnotes)
+
+Установить горячую клавишу
+
+```bash
+Footnote Shortcut  = Alt+F1
+```
+
+### `Pandoc` - экспорт в различные форматы
+
+Для корректной работы плагина нужно установить программу `pandoc`. [Скачать программу](https://github.com/jgm/pandoc/releases/tag/2.17.0.1)
+
+```bash
+sudo dpkg -i  $Программа$
+```
+
+---
+
+Использование `Ctl+P`
+
+```bash
+Pandoc
+```
 
 ## Настройки
 
