@@ -979,8 +979,16 @@ sudo modprobe vboxdrv
 
 [Сайт разработчиков](https://virt-manager.org/)
 
+Arch
+
 ```bash
 sudo pacman -S archlinux-keyring qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat libguestfs ebtables iptables;
+```
+
+Ubuntu
+
+```bash
+sudo apt install qemu qemu-kvm libvirt-daemon libvirt-clients bridge-utils virt-manager
 ```
 
 ```bash
@@ -988,7 +996,45 @@ sudo systemctl enable libvirtd.service
 sudo systemctl start libvirtd.service
 ```
 
-## `balenaEtcher`- Создать загрузочный диск
+## `balenaEtcher`- Создать загрузочный диск (Linux)
+
+## `WoeUSB` - Создать загрузочный диск (Windows)
+
+Установка
+
+```bash
+wget http://mirrors.kernel.org/ubuntu/pool/universe/w/wxwidgets3.0/libwxgtk3.0-0v5_3.0.4+dfsg-3_amd64.deb;
+sudo dpkg -i libwxgtk*_amd64.deb;
+sudo apt update;
+sudo apt --fix-broken install;
+sudo apt install woeusb;
+```
+
+Запуск
+
+```bash
+woeusbgui
+```
+
+## подключить ISO файл
+
+Создать точку монтирования
+
+```bash
+sudo mkdir /media/iso
+```
+
+Примонтировать `iso` файл к точке монтирования
+
+```bash
+sudo mount $Файл$.iso /media/iso -o loop
+```
+
+Размонтировать
+
+```bash
+sudo umount /media/iso
+```
 
 # Переводчики
 
@@ -1146,6 +1192,8 @@ sudo rm -dR yaourt/ package-query/
 ```bash
 sudo apt install snapd
 ```
+
+Путь где хранятся программы `/snap/bin/`
 
 | Команда                                          | Описание                           |
 | ------------------------------------------------ | ---------------------------------- |
@@ -1481,7 +1529,7 @@ google-drive-ocamlfuse $ПутьМонтированияПапки$
 
 Настраиваем автозапуск программы. Нужно создать `.sh` скрипт, который будет выполниться при запуске сеанса.
 
-![Настраиваем автозапуск программы](_attachments/Pasted%20image%2020220128231511.png)
+![Настраиваем автозапуск программы](_attachments/7d2b7cb28fb5b8e92b643bebbd3016d1.png)
 
 ## `Disk Usage Analyzer` - Использование диска
 
@@ -1495,4 +1543,18 @@ sudo apt install baobab
 
 ```bash
 baobab
+```
+
+## `Lunacy` - UX редактор
+
+Установка
+
+```bash
+sudo snap install lunacy;
+```
+
+Запуск
+
+```bash
+snap run lunacy;
 ```

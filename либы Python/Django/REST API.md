@@ -358,7 +358,7 @@ tmp = fake.name()
 
 ## Введение
 
-`Django Ninja` основан на `Pydantic` [Pydantic](../Уроки/Блок6%20-%20Сети.md#Pydantic).
+`Django Ninja` основан на `Pydantic` [Pydantic](../../Уроки/Блок6%20-%20Сети.md#Pydantic).
 
 ---
 
@@ -474,7 +474,7 @@ pip install django-ninja orjson
 
 ## Схема - Создание схемы из модели `ORM`
 
-Класс `Schema` основана на классе `BaseModel` из `Pydantic`, поэтому он имеет все возможности `Pydantic` [Pydantic](../Уроки/Блок6%20-%20Сети.md#Pydantic)]
+Класс `Schema` основана на классе `BaseModel` из `Pydantic`, поэтому он имеет все возможности `Pydantic` [Pydantic](../../Уроки/Блок6%20-%20Сети.md#Pydantic)]
 
 ### Схемы не связанные с модель БД
 

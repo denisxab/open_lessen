@@ -223,7 +223,7 @@ WHERE table_name = 'my_table';
 
 ** Для того чтобы подключится к `PostgreSQL` под другим пользователем нужно выполнить следующие шаги:**
 
-1. Создать нового пользователя в `postgreSQL`. (Если у вас уже есть пользователь то можно пропустить этот этап)
+1. Создать нового пользователя в `postgreSQL`.(Выполните эту программу из пользователя `postgres` так как он супер пользователь) (Если у вас уже есть пользователь то можно пропустить этот этап)
 
     ```bash
     createuser --interactive -P
@@ -326,6 +326,25 @@ WHERE table_name = 'my_table';
 - `Port` - по умолчанию `postgreSQL` работать на `5432` порту
 - `User` - пользователь в БД
 - `Password`- пароль от пользователя в БД
+
+### Решение частных проблем
+
+Если `FATAL: Peer authentication failed for user "postgres"`
+
+1. Установить или сменить пароль для пользователя `postgres`
+   `sudo passwd postgres;`
+
+2. Изменить способ подключения к БД. Установить способ пароль
+   `sudo micro /etc/postgresql/12/main/pg_hba.conf`
+
+    ```bash
+    local   all             postgres                                password
+    ```
+
+3. Перезагрузить БД
+   `sudo systemctl restart postgresql`
+
+---
 
 ## Про `pgAdmin4`
 

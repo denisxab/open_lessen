@@ -11,10 +11,20 @@ date updated: 2021-12-27 20:44
 
 ---
 
-Установить `node.js`
+[Установка самой новой версии `node.js`](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04-ru)
 
 ```bash
-sudo apt insatll nodejs
+cd ~
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+sudo bash nodesource_setup.sh
+sudo apt install nodejs
+node -v # 14.x.x
+```
+
+Установить стабильную версию `node.js`
+
+```bash
+sudo apt install nodejs
 ```
 
 | Команда `npm`                                        | Описание                                                                                                               |

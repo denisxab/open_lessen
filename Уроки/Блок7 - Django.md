@@ -2306,7 +2306,7 @@ fs.save(name=request.FILES["FilePhoto"].name, content=request.FILES["FilePhoto"]
 
 > `ORM`(объектно-реляционное отображение) = технология программирования, которая связывает базы данных с концепциями объектно-ориентированных языков программирования
 
-> [Подключение PostgreSQL к Django](../Django/PostgreSQL.md#Подключение%20PostgreSQL%20к%20Django)
+> [Подключение PostgreSQL к Django](../SQL/PostgreSQL.md#Подключение%20PostgreSQL%20к%20Django)
 
 ```python
 from django.db import models
@@ -2535,7 +2535,7 @@ class МодельБД(models.Model):
 
 ---
 
-Один-к-одному: [+](https://djbook.ru/rel3.0/ref/models/fields.html#onetoonefield). Пример из чистого `SQL` [Один к одному](../Django/PostgreSQL.md#Один%20к%20одному)
+Один-к-одному: [+](https://djbook.ru/rel3.0/ref/models/fields.html#onetoonefield). Пример из чистого `SQL` [Один к одному](../SQL/PostgreSQL.md#Один%20к%20одному)
 
 ```python
 from django.db.models import *
@@ -2587,7 +2587,7 @@ return HttpResponse('ok')
 
 ---
 
-Один-ко-многим: [+](https://djbook.ru/rel3.0/ref/models/fields.html#foreignkey). Пример из чистого `SQL` [Один ко многим](../Django/PostgreSQL.md#Один%20ко%20многим)
+Один-ко-многим: [+](https://djbook.ru/rel3.0/ref/models/fields.html#foreignkey). Пример из чистого `SQL` [Один ко многим](../SQL/PostgreSQL.md#Один%20ко%20многим)
 
 ```python
 class Сотрудник(Model):
@@ -2623,7 +2623,7 @@ return HttpResponse('ok')
 
 ---
 
-Многие-ко-многим: [+](https://djbook.ru/rel3.0/ref/models/fields.html#manytomanyfield). Пример из чистого `SQL` [Один ко многим](../Django/PostgreSQL.md#Один%20ко%20многим)
+Многие-ко-многим: [+](https://djbook.ru/rel3.0/ref/models/fields.html#manytomanyfield). Пример из чистого `SQL` [Один ко многим](../SQL/PostgreSQL.md#Один%20ко%20многим)
 
 ```python
 from django.db import models
@@ -2870,7 +2870,7 @@ a = model.object.all()
 
 ## PostgreSQL
 
-[PostgreSQL](../Django/PostgreSQL.md)
+[PostgreSQL](../SQL/PostgreSQL.md)
 
 ## Создать собственный тип столбца
 

@@ -397,11 +397,23 @@ rwx rwx rwx
     sudo chown <Пользователь>:<Группа> <Файл/Папка>
     ```
 
-    `-R` выполнить в рекурсивном режиме, для всех файлов в и папок в деректории
+    `-R` выполнить в рекурсивном режиме, для всех файлов в и папок в директории
 
 # Безопасность системы
 
 ## Бекабы система Linux
+
+[Статья про это](https://losst.ru/rezervnoe-kopirovanie-ubuntu)
+
+### Архивирование
+
+Создать архив с системой
+
+```bash
+sudo tar czf /backup.tar.gz --exclude=/backup.tar.gz --exclude=/home --exclude=/media --exclude=/dev --exclude=/mnt --exclude=/proc --exclude=/sys --exclude=/tmp /
+```
+
+### `Timeshift`
 
 Для бекапов будем использовать программу `Timeshift` установить:
 
@@ -413,7 +425,7 @@ sudo apt install timeshift
 
 Восстановление системы через консоль:
 
-- Все бекапы хранятся по пути `/run/timeshift/backup/timeshift/snapshots/`
+- Все бекап хранятся по пути `/run/timeshift/backup/timeshift/snapshots/`
 - ![Страница про это](<_attachments/Восстанавливаем%20систему%20из%20консоли%20или%20Live-USB%20(15.01.2022%2023_39_52).html>)
 - Выбираем бекап (Вводим индекс бекапа)
 
@@ -421,7 +433,7 @@ sudo apt install timeshift
     sudo timeshift --restore
     ```
 
-- Выбираем кокой диск мы хотим востановить
+- Выбираем кокой диск мы хотим восстановить
 
     ```bash
     Select GRUB device:
@@ -437,6 +449,10 @@ sudo apt install timeshift
 ---
 
 Создать бекап система
+
+```bash
+timeshift-launcher
+```
 
 - ![Внешний вид `Timeshift`](_attachments/f0fa98fb1cdf474b9522417c64e3350a.png)
 - Настройки `Timeshift`

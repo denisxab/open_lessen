@@ -43,7 +43,7 @@ DROP DATABASE <ИмяБд>;
 
 ---
 
-Создать таблицу новую таблицу с указанными типами [+](https://postgrespro.ru/docs/postgresql/9.6/sql-createtable). [Типы данных в PostgreSQL](../Django/PostgreSQL.md#Типы%20данных%20в%20PostgreSQL)
+Создать таблицу новую таблицу с указанными типами [+](https://postgrespro.ru/docs/postgresql/9.6/sql-createtable). [Типы данных в PostgreSQL](../SQL/PostgreSQL.md#Типы%20данных%20в%20PostgreSQL)
 
 ```sql
 CREATE TABLE IF NOT EXISTS <ИмяТаблицы> (

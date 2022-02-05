@@ -1,9 +1,52 @@
----
-date created: 2021-12-28 01:17
-date updated: 2021-12-28 13:43
----
+# Синхронизация настроек
 
-## Настройки для `Vs code`
+- Отправить конфигурации:
+
+    - Нажать `ctrl+shift+p` ввести `Sync: Update/Upload Settings`
+
+- Скачать конфигурацию:
+
+    - Нажать `ctrl+shift+p` ввести `Sync: Download Settings`
+
+- Создать конфигурацию:
+
+    1.  Скачать плагин `Settings Sync`
+    2.  Создать токен на `Githab`-> дать доступ к `gist`
+        ![`Githab` токен](_attachments/205fc76a59e903fa31a87e53c64adb48.png)
+
+# Плагин для `Vs code`
+
+## `Prettier` Красивое форматирование кода
+
+- `>Prettier: Create Configuration File` Создаем настройки для форматирование кода
+- `>Форматировать выбранное с помощью` Выбираем плагин для форматирования кода
+- `>Форматировать документ` Форматируем документ (`Ctrl + Shift + I`)
+
+Про настройки `.prettierrc` [+](https://prettier.io/docs/en/options.html):
+
+- `tabWidth` Сколько пробелов
+- `arrowParens` Ставить или нет круглые скобки для аргументов анонимных функций
+- `bracketSpacing` Отступы до и после фигурных скобок
+- `endOfLine` Как оканчивать документ
+- `htmlWhitespaceSensitivity` Чувствительность к пробелам
+- `jsxSingleQuote` Использовать одинарные кавычки вместо двойных (в JSX)
+- `printWidth` Сколько символом разрешено в одной строке до принудительного переноса строки
+- `semi` - Печать `;` в конце инструкции
+- `singleQuote`- Использовать одинарные кавычки вместо двойных
+- `trailingComma` - Когда ставить завершающие запятые
+- `useTabs` Использовать `TAB` вместо пробелов
+
+## `Live Preview` - Браузер в редакторе кода
+
+https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server
+
+```bash
+>Simple Browser: Show
+```
+
+![Show](_attachments/74761d5e2689204e43ba4fada7f13ea9.png)
+
+# Настройки для `Vs code`
 
 - Настройке `settings.json`
 
@@ -123,38 +166,3 @@ date updated: 2021-12-28 13:43
     	}
     }
     ```
-
-## Синхронизация настроек
-
-- Создать конфигурацию:
-
-    1.  Скачать плагин `Settings Sync`
-    2.  Создать токен на `Githab`-> дать доступ к `gist`
-        ![`Githab` токен](_attachments/205fc76a59e903fa31a87e53c64adb48.png)
-    3.  Нажать `ctrl+shift+p` ввести `Sync: Update/Upload Settings`
-
-- Скачать конфигурацию:
-
-    1.  Нажать `ctrl+shift+p` ввести `Sync: Download Settings`
-
-## Плагин для `Vs code`
-
-### `Prettier` Красивое форматирование кода
-
-- `>Prettier: Create Configuration File` Создаем настройки для форматирование кода
-- `>Форматировать выбранное с помощью` Выбираем плагин для форматирования кода
-- `>Форматировать документ` Форматируем документ (`Ctrl + Shift + I`)
-
-Про настройки `.prettierrc` [+](https://prettier.io/docs/en/options.html):
-
-- `tabWidth` Сколько пробелов
-- `arrowParens` Ставить или нет круглые скобки для аргументов анонимных функций
-- `bracketSpacing` Отступы до и после фигурных скобок
-- `endOfLine` Как оканчивать документ
-- `htmlWhitespaceSensitivity` Чувствительность к пробелам
-- `jsxSingleQuote` Использовать одинарные кавычки вместо двойных (в JSX)
-- `printWidth` Сколько символом разрешено в одной строке до принудительного переноса строки
-- `semi` - Печать `;` в конце инструкции
-- `singleQuote`- Использовать одинарные кавычки вместо двойных
-- `trailingComma` - Когда ставить завершающие запятые
-- `useTabs` Использовать `TAB` вместо пробелов
